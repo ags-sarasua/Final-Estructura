@@ -1,26 +1,33 @@
+from queue import Queue
 import datetime
+import csv
+import random
+import threading
 
 class Router: 
-    def __init__(self, posicion, estado, latencia):
+    def __init__(self, posicion, latencia = 0.1, estado = "ACTIVO"):
         self.posicion=posicion
         self.estado=estado
-        self.cola_paquetes_reenviar=[]
-        self.cola_paquetes_propios=[]
-        self.paquetes_recibidos=[]
-        self.paquetes_reenviados=[]
         self.latencia=latencia
+        self.cola_paquetes_reenviar=Queue()
+        self.cola_paquetes_propios=Queue()
+        self.lista_paquetes_recibidos=[]
+        self.contador_paquetes_reenviados=0
+
+    def activar(self):
+        self.estado = "ACTIVO"
 
     def transmitir(self):
         pass
 
-    def activar(self):
-        pass
-
     def desactivar(self):
-        pass
+        if self.cola_paquetes_reenviar.empty() and self.cola_paquetes_propios.empty():
+            self.estado = "INACTIVO"
+        else:
+            self.estado = "INHIBIDO"
 
     def reiniciar(self):
-        pass        
+        self.estado = "RESET"        
 
     def crear_txt(self, nombre):
         pass    
@@ -39,6 +46,9 @@ class routingSim:
     def __init__(self, duracion):
         self.duracion=duracion
         self.registro_evento=[]
+
+    def cambio_estado(self):
+        pass
 
     def routers(self):
         pass
