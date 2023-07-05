@@ -3,9 +3,11 @@ import datetime
 import csv
 import random
 import threading
+import numpy as np
+from Listas_enlazadas import *
 
 class Router: 
-    def __init__(self, posicion, latencia = 0.1, estado = "ACTIVO"):
+    def __init__(self, posicion, listaRouters, listaActivos, latencia = 0.1, estado = "ACTIVO"):
         self.posicion=posicion
         self.estado=estado
         self.latencia=latencia
@@ -13,21 +15,30 @@ class Router:
         self.cola_paquetes_propios=Queue()
         self.lista_paquetes_recibidos=[]
         self.contador_paquetes_reenviados=0
+        return listaRouters.append(self), listaActivos.append(posicion)
 
-    def activar(self):
+    def activar(self, listaActivos):
         self.estado = "ACTIVO"
+        listaActivos.append(self.posicion)
+
+    def desactivar(self, listaActivos):
+        if self.posicion in listaActivos:
+            if self.cola_paquetes_reenviar.empty() and self.cola_paquetes_propios.empty():
+                self.estado = "INACTIVO"
+            else:
+                self.estado = "INHIBIDO"
+            #listaActivos.pop()
+        else:
+            print("Error, el Router especificado no está activo")
+
+    def reiniciar(self, listaActivos):
+        if self.posicion in listaActivos:    
+            self.estado = "RESET"
+        else:
+            print("Error, el Router especificado no está activo")        
 
     def transmitir(self):
         pass
-
-    def desactivar(self):
-        if self.cola_paquetes_reenviar.empty() and self.cola_paquetes_propios.empty():
-            self.estado = "INACTIVO"
-        else:
-            self.estado = "INHIBIDO"
-
-    def reiniciar(self):
-        self.estado = "RESET"        
 
     def crear_txt(self, nombre):
         pass    
@@ -53,7 +64,7 @@ class routingSim:
     def routers(self):
         pass
 
-    def paquetes(self):
+    def enviar_paquetes(self, listaActivos):
         pass
 
     def crear_csv(self, nombre):

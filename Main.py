@@ -3,8 +3,8 @@ import time
 from Clases import *
 from Listas_enlazadas import *
 import random
-
-termino = False
+import numpy as np
+import sys
 
 def validarNum(min: int, max: int) -> int:
     ingresado = min - 1
@@ -21,30 +21,35 @@ def validarNum(min: int, max: int) -> int:
 
 def simular():
     listaRouters = Lista()
-    listaRouters.append(Router(1))
-    listaRouters.append(Router(2))
-    listaRouters.append(Router(3))
-    listaRouters.append(Router(4))
-    listaRouters.append(Router(5))
-    listaRouters.append(Router(6))
-    listaRouters.append(Router(7))
-    listaRouters.append(Router(8))
-    listaRouters.append(Router(9))
-    while not termino:
-        print("Simulación")
-        if random.random() < 0.3333333333333333333333333333333333333333:
-            Router.agregar_paquete()
-        if random.random() < 0.05:
-            Router.reiniciar(listaRouters[random.randint(1,9)])
-        if random.random() < 0.05:
-            Router.desactivar(listaRouters[random.randint(1,9)])
-        
-        time.sleep(0.2)
+    listaActivos = []
+    listaRouters, listaActivos = Router(1, listaRouters, listaActivos)
+    listaRouters, listaActivos = Router(2, listaRouters, listaActivos)
+    listaRouters, listaActivos = Router(3, listaRouters, listaActivos)
+    listaRouters, listaActivos = Router(4, listaRouters, listaActivos)
+    listaRouters, listaActivos = Router(5, listaRouters, listaActivos)
+    listaRouters, listaActivos = Router(6, listaRouters, listaActivos)
+    listaActivosOrdenada = np.sort(listaActivos)
+
+    try:
+        Router.reiniciar(listaRouters[5], listaActivos)
+    except IndexError:
+        print("Error. El router especificado no existe.")
+    try:
+        Router.desactivar(listaRouters[1], listaActivos)
+    except IndexError:
+        print("Error. El router especificado no existe.")
+
+    paquete1 = Paquete("Hola Ninfa, te queremos", 2, 4)
+    try:
+        Router.activar(listaRouters[1], listaActivos)
+    except IndexError:
+        print("Error. El router especificado no existe.")    
+    Router.agregar_paquete(paquete1)
+    listaActivosOrdenada = np.sort(listaActivos)
+    time.sleep(0.2)
 
 def timer(tiempo_espera):
-    time.sleep(tiempo_espera) 
-    global termino 
-    termino = True
+    time.sleep(tiempo_espera)
 
 def main():
     tiempo_simu = validarNum(0, 100000000)
@@ -56,6 +61,7 @@ def main():
     t2.start()
 
     t1.join()
+    print("Listo el pollo!")
+    sys.exit()
 
 main()
-print("Listo el pollo!")
