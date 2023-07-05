@@ -19,7 +19,7 @@ def timer(tiempo_espera):
     time.sleep(tiempo_espera)
 
 class Router: 
-    def __init__(self, posicion, latencia = 0.1, estado = "ACTIVO"):
+    def __init__(self, posicion:int, latencia = 0.1, estado = "ACTIVO"):
         global listaActivos
         global eventosRouters
 
@@ -110,7 +110,7 @@ class Router:
         pass
 
 class Paquete: 
-    def __init__(self, mensaje, router_origen, router_destino):
+    def __init__(self, mensaje:str, router_origen:Router, router_destino:Router):
         self.mensaje=mensaje
         self.router_origen=router_origen
         self.router_destino=router_destino
@@ -132,7 +132,7 @@ class routingSim:
     def routers(self):
         pass
     
-    def enviar_paquetes(self,paquete,lista_activos,contador=0):
+    def enviar_paquetes(self,paquete:Paquete,lista_activos:Lista,contador=0):
         print(contador)
         if paquete.router_actual.posicion<paquete.router_destino.posicion:
             if contador!=0:

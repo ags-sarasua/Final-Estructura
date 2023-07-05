@@ -33,18 +33,19 @@ class Lista():
     
     #ORDENA EL NUEVO OBJETO
     def ordenar(self):
-        nodo=Nodo()
-        nodo=self.head
-        if nodo==None:
+        nodo_mov1=Nodo()
+        nodo_mov1=self.head
+        if nodo_mov1==None:
             return self
-        while nodo.prox is not None:
-            nodo = nodo.prox
-        nuevo_nodo=nodo
-        nodo=self.head
-        while nodo.prox!=None and nodo.prox.dato.posicion < nuevo_nodo.dato.posicion :
-            nodo = nodo.prox
-        nuevo_nodo=nodo.prox
-        nodo.prox=nuevo_nodo
+        while nodo_mov1.prox is not None:
+            nodo_mov1 = nodo_mov1.prox
+        nuevo_nodo=nodo_mov1
+        
+        nodo_mov2=self.head
+        while nodo_mov2.prox!=None and nodo_mov2.prox.dato.posicion < nuevo_nodo.dato.posicion :
+            nodo_mov2 = nodo_mov2.prox
+        nuevo_nodo=nodo_mov2.prox
+        nodo_mov2.prox=nuevo_nodo
         return self
     
     def pop_ints(self,dato_a_eliminar: int):
@@ -57,7 +58,7 @@ class Lista():
             nodo = nodo.prox
         return self
     
-    def pop(self,input_principal,atributo_principal):  #INPUT PRINCIPAL: VARIABLE QUE INGRESA EL USUARIO   ATRIBUTO_PRINCIPAL "DNI"
+    def pop(self,input_principal,atributo_principal):  #INPUT PRINCIPAL: VARIABLE QUE INGRESA EL USUARIO   ATRIBUTO_PRINCIPAL "POSICION"
         nodo=Nodo()
         nodo=self.head
         for i in range(self.len-1):
@@ -91,13 +92,13 @@ class Lista():
             nodo=nodo.prox
         print('b')
     
+    """
     def buscar_attr(self,input_principal, atributo_principal,atributo_a_buscar):
         dato = self.buscar_inst(input_principal, atributo_principal)
         if dato:
             return getattr(dato,atributo_a_buscar)
         return False 
 
-    
     def actualizar_le(self,input_principal, atributo_principal,atributo_a_buscar,nuevo_input):
         nodo=Nodo()
         nodo=self.head
@@ -110,3 +111,4 @@ class Lista():
             nodo=nodo.prox
         
         return False
+    """

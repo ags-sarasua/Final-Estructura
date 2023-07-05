@@ -1,81 +1,30 @@
-"""from queue import Queue
 
-hola = Queue()
+import matplotlib.pyplot as plt
 
-#hola.put(8)
-#hola.put(88)
-#print(Queue.get(hola))
+def graficar(listaRouters):
+    
+    router_id = []
+    paquetes_man=[]
+    nodo_actual = listaRouters.head  
+    while nodo_actual is not None:
+        router_id.append(nodo_actual.dato.posicion)
+        paquetes_man.append(nodo_actual.dato.contador_paquetes_reenviados+len(nodo_actual.dato.lista_paquetes_recibidos))
+        nodo_actual = nodo_actual.prox 
+    plt.title(label="Paquetes enviados y recibidos por router", fontsize = 20, color = "green")
+    plt.xlabel("Routers")
+    plt.ylabel("Paquetes manipulados")
+    plt.bar(router_id , paquetes_man, color = "green", width = 1)
+    plt.show()
 
-print(hola.empty())"""
-
-"""import asyncio
-tiempo_espera = 3
-asyncio.sleep(tiempo_espera)
-print("Hola")"""
-
-"""import time
-
-def esperar(tiempo_espera):
-    tiempo_inicio = time.time()  # Tiempo de inicio en segundos
-    tiempo_actual = time.time()  # Tiempo actual en segundos
-
-    while (tiempo_actual - tiempo_inicio) < tiempo_espera:
-        tiempo_actual = time.time()
-
-    print("Tiempo de espera completado")
-
-# Variable de entrada para el tiempo de espera
-tiempo_espera = int(input("Ingrese el tiempo de espera en segundos: "))
-
-# Llamada a la función esperar
-esperar(tiempo_espera)
-
-import time
-
-def esperar(tiempo_espera):
-    print("Esperando...")
-    time.sleep(tiempo_espera)
-    print("Tiempo de espera completado")
-
-# Variable de entrada para el tiempo de espera
-tiempo_espera = int(input("Ingrese el tiempo de espera en segundos: "))
-
-# Llamada a la función esperar
-esperar(tiempo_espera)
-"""
-import time
-import threading
- 
- 
-def print_cube():
-    # function to print cube of given num
-    print("Fun 1")
-    n=0
-    while n<10000:
-        print(n)
-        n+=1
- 
- 
-def print_square():
-    # function to print square of given num
-    print("Fun 2")
-    time.sleep(10)
- 
- 
-if __name__ =="__main__":
-    # creating thread
-    t1 = threading.Thread(target=print_square)
-    t2 = threading.Thread(target=print_cube)
- 
-    # starting thread 1
-    t1.start()
-    # starting thread 2
-    t2.start()
- 
-    # wait until thread 1 is completely executed
-    t1.join()
-    # wait until thread 2 is completely executed
-    t2.join()
- 
-    # both threads completely executed
-    print("Done!")
+def validarNum(min: int, max: int) -> int:
+    ingresado = min - 1
+    booleana = False
+    while(booleana == False):
+        try:
+            ingresado = int(input("Ingrese tiempo de simulación: "))
+            if(ingresado < min or ingresado > max):
+                print("Error, el número debe estar entre {} y {}".format(min, max))
+            else:
+                return ingresado
+        except:
+            print("Error, tiene que ingresar un número. intente de nuevo")
