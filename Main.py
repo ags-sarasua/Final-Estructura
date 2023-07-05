@@ -41,7 +41,6 @@ def simular(duracion):
     except IndexError:
         print("Error. El router especificado no existe.")
 
-    paquete1 = Paquete("Hola Ninfa, te queremos", 2, 4)
     try:
         listaRouters.buscar_inst(1, "posicion").dato.activar()
         #Router.activar(listaRouters.buscar_inst(1, "posicion"))

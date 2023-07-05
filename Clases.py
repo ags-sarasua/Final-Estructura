@@ -30,7 +30,6 @@ class Router:
         self.cola_paquetes_propios=Queue()
         self.lista_paquetes_recibidos=[]
         self.contador_paquetes_reenviados=0
-        print(type(listaActivos))
         listaActivos.append(Nodo(self))
         listaActivos.ordenar()
         
@@ -117,6 +116,7 @@ class Paquete:
         self.router_destino=router_destino
         self.router_actual=router_origen
         self.hora_creacion=datetime.datetime.now().time()
+        
         router_origen.cola_paquetes_propios.put(self)
         print(router_origen.cola_paquetes_propios)
     
@@ -133,31 +133,38 @@ class routingSim:
         pass
     
     def enviar_paquetes(self,paquete,lista_activos,contador=0):
-        
+        print(contador)
         if paquete.router_actual.posicion<paquete.router_destino.posicion:
             if contador!=0:
-                paquete.router_actual.contador_paquetes_reenviados+=1
-            paquete.router_actual.cola_paquetes_propios.get()
+                paquete.router_actual.cola_paquetes_reenviar.get()
+            else:
+                paquete.router_actual.cola_paquetes_propios.get()
             paquete.router_actual=lista_activos.buscar_inst(paquete.router_actual.posicion, "posicion").prox.dato
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador+=1
             self.enviar_paquetes(paquete,lista_activos,contador)
             return print('HECHO')
         
-        if paquete.router_actual.posicion>paquete.router_destino.posicion:
+        elif paquete.router_actual.posicion>paquete.router_destino.posicion:
             if contador!=0:
                 paquete.router_actual.contador_paquetes_reenviados+=1
-            paquete.router_actual.cola_paquetes_propios.get()
+                paquete.router_actual.cola_paquetes_reenviar.get()
+            else:
+                paquete.router_actual.cola_paquetes_propios.get()
             paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").dato
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
+            print(paquete.router_actual)
             contador+=1
             self.enviar_paquetes(paquete,lista_activos,contador)
             return print('HECHO')
-        
-        if paquete.router_actual.posicion==paquete.router_destino:
-            paquete.router_actual.cola_paquetes_reenviar.pop(paquete)
-            paquete.router_actual.lista_paquetes_recibidos.put(paquete)
-            return print('HECHO')
+    
+        elif paquete.router_actual.posicion==paquete.router_destino.posicion:
+            if contador!=0:
+                paquete.router_actual.cola_paquetes_reenviar.get()
+            else:
+                paquete.router_actual.cola_paquetes_propios.get()
+            paquete.router_actual.lista_paquetes_recibidos.append(paquete)
+            return print('HECHOOOOO')
     
 
     def crear_csv(self):
