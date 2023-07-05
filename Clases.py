@@ -132,29 +132,29 @@ class routingSim:
     def routers(self):
         pass
     
-    def enviar_paquetes(self,paquete:Paquete(),lista_activos:Lista(),contador=0):
-        if paquete.router_actual<paquete.router_destino:
+    def enviar_paquetes(self,paquete,lista_activos,contador=0):
+        if paquete.router_actual.posicion<paquete.router_destino.posicion:
             if contador!=0:
                 paquete.router_actual.contador_paquetes_reenviados+=1
-            paquete.router_actual.cola_paquetes_propios.pop(paquete)
-            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual, "posicion").prox.prox
-            paquete.router_actual.cola_paquetes_reenviar.append(paquete)
+            #paquete.router_actual.cola_paquetes_propios.pop(paquete)
+            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").prox.prox.dato
+            paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador+=1
-            routingSim.enviar_paquetes(paquete,lista_activos,contador)
-            return None
-        if paquete.router_actual>paquete.router_destino:
+            routingSim.enviar_paquetes(self,paquete,lista_activos,contador)
+            return print('HECHO')
+        if paquete.router_actual.posicion>paquete.router_destino.posicion:
             if contador!=0:
                 paquete.router_actual.contador_paquetes_reenviados+=1
-            paquete.router_actual.cola_paquetes_propios.pop(paquete)
-            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual, "posicion")
-            paquete.router_actual.cola_paquetes_reenviar.append(paquete)
+            #paquete.router_actual.cola_paquetes_propios.pop(paquete)
+            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").dato
+            paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador+=1
             routingSim.enviar_paquetes(paquete,lista_activos,contador)
-            return None
-        if paquete.router_actual==paquete.router_destino:
+            return print('HECHO')
+        if paquete.router_actual.posicion==paquete.router_destino:
             paquete.router_actual.cola_paquetes_reenviar.pop(paquete)
-            paquete.router_actual.lista_paquetes_recibidos.append(paquete)
-            return None
+            paquete.router_actual.lista_paquetes_recibidos.put(paquete)
+            return print('HECHO')
     
 
     def crear_csv(self):

@@ -70,9 +70,9 @@ class Lista():
     def buscar_inst_anterior(self,input_principal, atributo_principal):
         nodo=Nodo()
         nodo=self.head
-        for i in range(self.len):
-            if getattr(nodo.dato.prox,atributo_principal)==input_principal:
-                return nodo.dato
+        for i in range(self.len-1):
+            if getattr(nodo.prox.dato,atributo_principal)==input_principal:
+                return nodo
             nodo=nodo.prox
             
         return False

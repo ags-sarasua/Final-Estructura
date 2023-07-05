@@ -22,7 +22,15 @@ def validarNum(min: int, max: int) -> int:
 
 def simular(duracion, listaRouters):
     simulacion = routingSim(duracion)
+    paquete1=Paquete("nINFAAAAA",Router(1),Router(5))
+    lista_activos=Lista()
+    lista_activos.append(Nodo(Router(1)))
+    lista_activos.append(Nodo(Router(2)))
+    lista_activos.append(Nodo(Router(3)))
+    lista_activos.append(Nodo(Router(4)))
+    lista_activos.append(Nodo(Router(5)))
 
+    simulacion.enviar_paquetes(paquete1,lista_activos)
     
 
     try:
