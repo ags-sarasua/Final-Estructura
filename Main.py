@@ -19,34 +19,38 @@ def validarNum(min: int, max: int) -> int:
         except:
             print("Error, tiene que ingresar un número. intente de nuevo")
 
-def simular():
+def simular(duracion):
+    simulacion = routingSim(duracion)
+
     listaRouters = Lista()
-    listaActivos = []
-    listaRouters, listaActivos = Router(1, listaRouters, listaActivos)
-    listaRouters, listaActivos = Router(2, listaRouters, listaActivos)
-    listaRouters, listaActivos = Router(3, listaRouters, listaActivos)
-    listaRouters, listaActivos = Router(4, listaRouters, listaActivos)
-    listaRouters, listaActivos = Router(5, listaRouters, listaActivos)
-    listaRouters, listaActivos = Router(6, listaRouters, listaActivos)
-    listaActivosOrdenada = np.sort(listaActivos)
+    listaRouters.append(Router(1))
+
+    listaRouters.append(Router(3))
+    listaRouters.append(Router(3))
+    listaRouters.append(Router(4))
+    listaRouters.append(Router(5))
+    listaRouters.append(Router(6))
+    #listaActivosOrdenada = listaActivos.sort()
 
     try:
-        Router.reiniciar(listaRouters[5], listaActivos)
+        Router.reiniciar(listaRouters[1])
     except IndexError:
         print("Error. El router especificado no existe.")
     try:
-        Router.desactivar(listaRouters[1], listaActivos)
+        Router.desactivar(listaRouters[1])
     except IndexError:
         print("Error. El router especificado no existe.")
 
     paquete1 = Paquete("Hola Ninfa, te queremos", 2, 4)
     try:
-        Router.activar(listaRouters[1], listaActivos)
+        Router.activar(listaRouters[1])
     except IndexError:
         print("Error. El router especificado no existe.")    
-    Router.agregar_paquete(paquete1)
-    listaActivosOrdenada = np.sort(listaActivos)
-    time.sleep(0.2)
+
+    
+    #Router.agregar_paquete(paquete1)
+    routingSim.crear_csv(simulacion)
+    
 
 def timer(tiempo_espera):
     time.sleep(tiempo_espera)
@@ -55,7 +59,7 @@ def main():
     tiempo_simu = validarNum(0, 100000000)
 
     t1 = threading.Thread(target=timer, args=(tiempo_simu,))
-    t2 = threading.Thread(target=simular)
+    t2 = threading.Thread(target=simular, args=(tiempo_simu,))
 
     t1.start()
     t2.start()
