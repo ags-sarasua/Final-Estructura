@@ -7,8 +7,13 @@ import threading
 import numpy as np
 from Listas_enlazadas import *
 
-eventosRouters = []
-listaActivos = []
+
+global listaRouters
+global listaActivos
+global eventosRouters
+listaRouters = Lista()
+listaActivos=Lista()
+eventosRouters=[]
 
 def timer(tiempo_espera):
     time.sleep(tiempo_espera)
@@ -25,8 +30,10 @@ class Router:
         self.cola_paquetes_propios=Queue()
         self.lista_paquetes_recibidos=[]
         self.contador_paquetes_reenviados=0
-
-        listaActivos.append(posicion)
+        print(type(listaActivos))
+        listaActivos.append(Nodo(self))
+        listaActivos.ordenar()
+        
         nombre = "ROUTER_" + str(self.posicion)
         fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S") 
         eventosRouters.append((nombre, fecha_evento, "ACTIVO"))
@@ -38,8 +45,8 @@ class Router:
             global listaActivos
 
             self.estado = "ACTIVO"
-            listaActivos.append(self.posicion)
-            listaActivos.sort()
+            listaActivos.append(Nodo(self))
+            listaActivos.ordenar()
 
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S") 
@@ -50,7 +57,7 @@ class Router:
     def desactivar(self):
         global eventosRouters
         global listaActivos
-        if self.posicion in listaActivos:
+        if listaActivos.buscar_inst(self.posicion,"posicion"):
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S") 
 
@@ -66,40 +73,31 @@ class Router:
                 eventosRouters.append((nombre, fecha_evento, "INHIBIDO"))
 
             
-            listaActivos.pop(self.posicion)
-            listaActivos.sort()
+            listaActivos.pop(self.posicion,"posicion")
         else:
             print("Error, el Router especificado no está activo")
 
-    def reiniciar(self):
-        global listaActivos
-        if self.posicion in listaActivos:    
-            
-            def reset(self):
+    def reset(self):
                 global listaActivos
                 global eventosRouters
 
                 self.estado = "RESET"
-                listaActivos.pop(self.posicion)
-                listaActivos.sort()
+                listaActivos.pop(self.posicion,"posicion")
 
                 nombre = "ROUTER_" + str(self.posicion)
                 fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S") 
-                eventosRouters.append((nombre, fecha_evento, "EN_RESET"))                
-
-            threadReset = threading.Thread(target=reset, args=(self,))
+                eventosRouters.append((nombre, fecha_evento, "EN_RESET"))          
+                
+    def reiniciar(self):
+        global listaActivos
+        print(self)
+        if listaActivos.buscar_inst(self.posicion,"posicion"):
+            threadReset = threading.Thread(target=self.reset, args=())
             threadTiempo = threading.Thread(target=timer, args=(random.randint(5,10),))
-
             threadReset.start()
             threadTiempo.start()
-
             threadTiempo.join()
-
-            self.estado = "ACTIVO"
-            
-            listaActivos.sort()
-            listaActivos.append(self.posicion)
-
+            self.activar()
         else:
             print("Error, el Router especificado no está activo")        
 
@@ -119,6 +117,8 @@ class Paquete:
         self.router_destino=router_destino
         self.router_actual=router_origen
         self.hora_creacion=datetime.datetime.now().time()
+        router_origen.cola_paquetes_propios.put(self)
+        print(router_origen.cola_paquetes_propios)
     
 
 class routingSim: 
@@ -133,24 +133,27 @@ class routingSim:
         pass
     
     def enviar_paquetes(self,paquete,lista_activos,contador=0):
+        
         if paquete.router_actual.posicion<paquete.router_destino.posicion:
             if contador!=0:
                 paquete.router_actual.contador_paquetes_reenviados+=1
-            #paquete.router_actual.cola_paquetes_propios.pop(paquete)
-            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").prox.prox.dato
+            paquete.router_actual.cola_paquetes_propios.get()
+            paquete.router_actual=lista_activos.buscar_inst(paquete.router_actual.posicion, "posicion").prox.dato
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador+=1
-            routingSim.enviar_paquetes(self,paquete,lista_activos,contador)
+            self.enviar_paquetes(paquete,lista_activos,contador)
             return print('HECHO')
+        
         if paquete.router_actual.posicion>paquete.router_destino.posicion:
             if contador!=0:
                 paquete.router_actual.contador_paquetes_reenviados+=1
-            #paquete.router_actual.cola_paquetes_propios.pop(paquete)
+            paquete.router_actual.cola_paquetes_propios.get()
             paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").dato
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador+=1
-            routingSim.enviar_paquetes(paquete,lista_activos,contador)
+            self.enviar_paquetes(paquete,lista_activos,contador)
             return print('HECHO')
+        
         if paquete.router_actual.posicion==paquete.router_destino:
             paquete.router_actual.cola_paquetes_reenviar.pop(paquete)
             paquete.router_actual.lista_paquetes_recibidos.put(paquete)

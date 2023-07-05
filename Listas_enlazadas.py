@@ -10,6 +10,7 @@ class Lista():
     def __init__(self):
         self.head=None
         self.len=0
+        
     def __str__(self):
         nodo = Nodo()
         nodo=self.head
@@ -30,13 +31,17 @@ class Lista():
             nodomov.prox=nodo   #muy bueno
         self.len+=1
     
-    def ordenar_ints(self):
+    #ORDENA EL NUEVO OBJETO
+    def ordenar(self):
         nodo=Nodo()
         nodo=self.head
+        if nodo==None:
+            return self
         while nodo.prox is not None:
             nodo = nodo.prox
         nuevo_nodo=nodo
-        while nodo.prox < nuevo_nodo:
+        nodo=self.head
+        while nodo.prox!=None and nodo.prox.dato.posicion < nuevo_nodo.dato.posicion :
             nodo = nodo.prox
         nuevo_nodo=nodo.prox
         nodo.prox=nuevo_nodo
@@ -74,8 +79,18 @@ class Lista():
             if getattr(nodo.prox.dato,atributo_principal)==input_principal:
                 return nodo
             nodo=nodo.prox
-            
+        print('b')
         return False
+    
+    def buscar_inst(self,input_principal, atributo_principal):
+        nodo=Nodo()
+        nodo=self.head
+        for i in range(self.len):
+            if getattr(nodo.dato,atributo_principal)==input_principal:
+                return nodo
+            nodo=nodo.prox
+        print('b')
+    
     def buscar_attr(self,input_principal, atributo_principal,atributo_a_buscar):
         dato = self.buscar_inst(input_principal, atributo_principal)
         if dato:
