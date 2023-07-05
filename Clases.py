@@ -117,7 +117,9 @@ class Paquete:
         self.mensaje=mensaje
         self.router_origen=router_origen
         self.router_destino=router_destino
+        self.router_actual=router_origen
         self.hora_creacion=datetime.datetime.now().time()
+    
 
 class routingSim: 
     def __init__(self, duracion):
@@ -129,9 +131,31 @@ class routingSim:
 
     def routers(self):
         pass
-
-    def enviar_paquetes(self, listaActivos):
-        pass
+    
+    def enviar_paquetes(self,paquete:Paquete(),lista_activos:Lista(),contador=0):
+        if paquete.router_actual<paquete.router_destino:
+            if contador!=0:
+                paquete.router_actual.contador_paquetes_reenviados+=1
+            paquete.router_actual.cola_paquetes_propios.pop(paquete)
+            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual, "posicion").prox.prox
+            paquete.router_actual.cola_paquetes_reenviar.append(paquete)
+            contador+=1
+            routingSim.enviar_paquetes(paquete,lista_activos,contador)
+            return None
+        if paquete.router_actual>paquete.router_destino:
+            if contador!=0:
+                paquete.router_actual.contador_paquetes_reenviados+=1
+            paquete.router_actual.cola_paquetes_propios.pop(paquete)
+            paquete.router_actual=lista_activos.buscar_inst_anterior(paquete.router_actual, "posicion")
+            paquete.router_actual.cola_paquetes_reenviar.append(paquete)
+            contador+=1
+            routingSim.enviar_paquetes(paquete,lista_activos,contador)
+            return None
+        if paquete.router_actual==paquete.router_destino:
+            paquete.router_actual.cola_paquetes_reenviar.pop(paquete)
+            paquete.router_actual.lista_paquetes_recibidos.append(paquete)
+            return None
+    
 
     def crear_csv(self):
         with open('system_log.csv', 'w', newline='') as archivo_csv:

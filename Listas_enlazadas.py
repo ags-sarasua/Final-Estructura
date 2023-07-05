@@ -29,7 +29,29 @@ class Lista():
                 nodomov=nodomov.prox
             nodomov.prox=nodo   #muy bueno
         self.len+=1
-        
+    
+    def ordenar_ints(self):
+        nodo=Nodo()
+        nodo=self.head
+        while nodo.prox is not None:
+            nodo = nodo.prox
+        nuevo_nodo=nodo
+        while nodo.prox < nuevo_nodo:
+            nodo = nodo.prox
+        nuevo_nodo=nodo.prox
+        nodo.prox=nuevo_nodo
+        return self
+    
+    def pop_ints(self,dato_a_eliminar: int):
+        nodo=Nodo()
+        nodo=self.head
+        while nodo.prox is not None:
+            if nodo.dato==dato_a_eliminar:
+                nodo.prox=nodo.prox.prox
+                print(f'Se ha eliminado correctamente {dato_a_eliminar}')
+            nodo = nodo.prox
+        return self
+    
     def pop(self,input_principal,atributo_principal):  #INPUT PRINCIPAL: VARIABLE QUE INGRESA EL USUARIO   ATRIBUTO_PRINCIPAL "DNI"
         nodo=Nodo()
         nodo=self.head
@@ -44,22 +66,23 @@ class Lista():
                 return True
             nodo=nodo.prox
         return False
-    
-    def buscar_inst(self,input_principal, atributo_principal):
+
+    def buscar_inst_anterior(self,input_principal, atributo_principal):
         nodo=Nodo()
         nodo=self.head
         for i in range(self.len):
-            if getattr(nodo.dato,atributo_principal)==input_principal:
+            if getattr(nodo.dato.prox,atributo_principal)==input_principal:
                 return nodo.dato
             nodo=nodo.prox
+            
         return False
-
     def buscar_attr(self,input_principal, atributo_principal,atributo_a_buscar):
         dato = self.buscar_inst(input_principal, atributo_principal)
         if dato:
             return getattr(dato,atributo_a_buscar)
         return False 
-        
+
+    
     def actualizar_le(self,input_principal, atributo_principal,atributo_a_buscar,nuevo_input):
         nodo=Nodo()
         nodo=self.head
