@@ -22,6 +22,7 @@ def timer(tiempo_espera):
 class Router:
     def __init__(self, posicion: int, latencia=0.1, estado="ACTIVO"):
         global listaActivos
+        global listaRouters
         global eventosRouters
 
         self.posicion = posicion
@@ -32,6 +33,7 @@ class Router:
         self.lista_paquetes_recibidos = []
         self.contador_paquetes_reenviados = 0
         self.contador_paquetes_enviados = 0
+        listaRouters.append(Nodo(self))
         listaActivos.append(Nodo(self))
         listaActivos.ordenar()
 
@@ -119,36 +121,40 @@ class routingSim:
         pass
 
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
-        if paquete.router_actual.posicion < paquete.router_destino.posicion:
+        if paquete.router_actual.posicion < paquete.router_destino.posicion:  #Va para la derecha
             if contador != 0:
-                paquete.router_actual.cola_paquetes_reenviar.get()
+                paquete.router_actual.cola_paquetes_reenviar.get()   #Este get solo se usa para eliminar el primero de la queue
+                paquete.router_actual.contador_paquetes_reenviados += 1
             else:
-                paquete.router_actual.cola_paquetes_propios.get()
+                paquete.router_actual.cola_paquetes_propios.get()    #Este get solo se usa para eliminar el primero de la queue
                 paquete.router_actual.contador_paquetes_enviados += 1
-            paquete.router_actual = lista_activos.buscar_inst(paquete.router_actual.posicion, "posicion").prox.dato
-            paquete.router_actual.cola_paquetes_reenviar.put(paquete)
+            paquete.router_actual = lista_activos.buscar_inst(paquete.router_actual.posicion, "posicion").prox.dato  #Encuentra el proximo router
+            paquete.router_actual.cola_paquetes_reenviar.put(paquete)  #Agrega paquete a la cola reenviar del proximo
             contador += 1
-            self.enviar_paquetes(paquete, lista_activos, contador)
+            self.enviar_paquetes(paquete, lista_activos, contador)  #Llamada recursiva con router_actual actualizado
+            return None
 
-        elif paquete.router_actual.posicion > paquete.router_destino.posicion:
+        elif paquete.router_actual.posicion > paquete.router_destino.posicion: #Va para la izquierda
             if contador != 0:
                 paquete.router_actual.contador_paquetes_reenviados += 1
-                paquete.router_actual.cola_paquetes_reenviar.get()
+                paquete.router_actual.cola_paquetes_reenviar.get()  
             else:
-                paquete.router_actual.cola_paquetes_propios.get()
+                paquete.router_actual.cola_paquetes_propios.get()  
                 paquete.router_actual.contador_paquetes_enviados += 1
-            paquete.router_actual = lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").dato
-            paquete.router_actual.cola_paquetes_reenviar.put(paquete)
+                
+            paquete.router_actual = lista_activos.buscar_inst_anterior(paquete.router_actual.posicion, "posicion").dato  #Encuentra el router anterior
+            paquete.router_actual.cola_paquetes_reenviar.put(paquete)  #Agrega paquete a la cola reenviar del anterior
             contador += 1
-            self.enviar_paquetes(paquete, lista_activos, contador)
+            self.enviar_paquetes(paquete, lista_activos, contador)   #Llamada recursiva con router_actual actualizado
+            return None
 
-
-        elif paquete.router_actual.posicion == paquete.router_destino.posicion:
+        elif paquete.router_actual.posicion == paquete.router_destino.posicion: #encuentra el router de destino
             if contador != 0:
-                paquete.router_actual.cola_paquetes_reenviar.get()
+                paquete.router_actual.cola_paquetes_reenviar.get()  #lo elimina de la cola reenviar
             else:
                 paquete.router_actual.cola_paquetes_propios.get()
-            paquete.router_actual.lista_paquetes_recibidos.append(paquete)
+            paquete.router_actual.lista_paquetes_recibidos.append(paquete)   #lo suma a la lista de paquetes recibidos
+            return None
 
     def crear_csv(self):
         with open('system_log.csv', 'w', newline='') as archivo_csv:

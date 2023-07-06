@@ -9,21 +9,27 @@ def simular(duracion):
     global listaRouters
     global listaActivos
     global eventosRouters
+    Router_1=Router(1)
+    Router_2=Router(2)
+    Router_3=Router(3)
+    Router_4=Router(4)
+    Router_5=Router(5)
+    Router_6=Router(6)
 
     simulacion = routingSim(duracion)
-    paquete1 = Paquete("nINFAAAAA", Router(5), Router(1))
-    paquete2 = Paquete("nINFAAAAA", Router(3), Router(5))
+    paquete1 = Paquete("nINFAAAAA", Router_5, Router_1)
+    paquete2 = Paquete("nINFAAAAA", Router_3, Router_5)
     simulacion.enviar_paquetes(paquete1, listaActivos)
     simulacion.enviar_paquetes(paquete2, listaActivos)
 
     try:
         listaRouters.buscar_inst(1, "posicion").dato.reiniciar()
-        # Router.reiniciar(listaRouters.buscar_inst(1, "posicion"))
+        #Router.reiniciar(listaRouters.buscar_inst(1, "posicion").dato)
     except IndexError:
         print("Error. El router especificado no existe.")
     try:
         listaRouters.buscar_inst(1, "posicion").dato.desactivar()
-        # Router.desactivar(listaRouters.buscar_inst(1, "posicion"))
+        #Router.desactivar(listaRouters.buscar_inst(1, "posicion").dato)
     except IndexError:
         print("Error. El router especificado no existe.")
 
@@ -43,12 +49,6 @@ def main():
     global listaActivos
     global eventosRouters
     tiempo_simulacion = validarNum(0, 100000000)
-    listaRouters.append(Nodo(Router(1)))
-    listaRouters.append(Nodo(Router(2)))
-    listaRouters.append(Nodo(Router(3)))
-    listaRouters.append(Nodo(Router(4)))
-    listaRouters.append(Nodo(Router(5)))
-    listaRouters.append(Nodo(Router(6)))
     t1 = threading.Thread(target=timer, args=(tiempo_simulacion,))
     t2 = threading.Thread(target=simular, args=(tiempo_simulacion,))
 

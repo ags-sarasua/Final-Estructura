@@ -19,12 +19,21 @@ def graficar(listaRouters):
 
         nodo_actual = nodo_actual.prox
 
-    plt.title("Paquetes enviados y recibidos por router", fontsize=20, color="green")
-    plt.xlabel("Routers")
-    plt.ylabel("Paquetes manipulados")
-    plt.bar(router_id, paquetes_enviados, color="blue", label="Paquetes enviados")
-    plt.bar(router_id, paquetes_recibidos, color="green", label="Paquetes recibidos")
-    plt.legend()
+    fig, (plot1, plot2) = plt.subplots(1, 2, figsize=(10, 4))
+
+    # Graph for paquetes enviados
+    plot1.set_title("Paquetes enviados por router", fontsize=15, color="black")
+    plot1.set_xlabel("Posicion router")
+    plot1.set_ylabel("Paquetes manipulados")
+    plot1.bar(router_id, paquetes_enviados, color="cyan", label="Paquetes enviados")
+
+    # Graph for paquetes recibidos
+    plot2.set_title("Paquetes recibidos por router", fontsize=15, color="black")
+    plot2.set_xlabel("Posicion router")
+    plot2.set_ylabel("Paquetes manipulados")
+    plot2.bar(router_id, paquetes_recibidos, color="purple", label="Paquetes enviados")
+
+    fig.tight_layout()
     plt.show()
 
 def validarNum(min: int, max: int) -> int:
