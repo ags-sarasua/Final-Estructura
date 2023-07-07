@@ -121,12 +121,12 @@ class Router:
         else:
             print("Error, el Router especificado no está activo")
 
-        def latencia(self):
-            global listaActivos
-            listaActivos.pop(self.posicion,"posicion")
-            time.sleep(self.latencia)
-            listaActivos.append(Nodo(self))
-            listaActivos.ordenar()
+    def latencia(self):
+        global listaActivos
+        listaActivos.pop(self.posicion,"posicion")
+        time.sleep(self.latencia)
+        listaActivos.append(Nodo(self))
+        listaActivos.ordenar()
                 
     
 class Paquete:
