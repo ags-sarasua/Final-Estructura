@@ -29,10 +29,10 @@ def simular(duracion):
     paquete4 = Paquete("Texto del paquete 4", Router_2, Router_3)
 
     # Enviamos los paquetes creados
-    simulacion.enviar_paquetes(paquete1, listaActivos)
-    simulacion.enviar_paquetes(paquete2, listaActivos)
-    simulacion.enviar_paquetes(paquete3, listaActivos)
-    simulacion.enviar_paquetes(paquete4, listaActivos)
+    simulacion.prioridad_enviar_paquetes(paquete1, listaActivos)
+    simulacion.prioridad_enviar_paquetes(paquete2, listaActivos)
+    simulacion.prioridad_enviar_paquetes(paquete3, listaActivos)
+    simulacion.prioridad_enviar_paquetes(paquete4, listaActivos)
 
     try:
         # Desactivamos un Router

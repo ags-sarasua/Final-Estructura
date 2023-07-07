@@ -121,7 +121,14 @@ class Router:
         else:
             print("Error, el Router especificado no está activo")
 
-
+        def latencia(self):
+            global listaActivos
+            listaActivos.pop(self.posicion,"posicion")
+            time.sleep(self.latencia)
+            listaActivos.append(Nodo(self))
+            listaActivos.ordenar()
+                
+    
 class Paquete:
     def __init__(self, mensaje: str, router_origen: Router, router_destino: Router):
         self.mensaje = mensaje
@@ -172,6 +179,14 @@ class routingSim:
             with open("router_" + str(router_sin_mensajes.posicion), "w") as archivo:
                 archivo.write("Este router no ha recibido mensajes\n")
 
+    
+    def prioridad_enviar_paquetes(self, paquete: Paquete,listaActivos: Lista):
+        while True:    
+            if Queue.qsize(paquete.router_origen.cola_paquetes_reenviar)==0 and listaActivos.buscar_inst(paquete.router_origen.posicion,"posicion") and listaActivos.buscar_inst(paquete.router_destino.posicion,"posicion"):
+                self.enviar_paquetes(paquete, listaActivos)
+                return print('El paquete esta en camino')
+            timer(0.1)
+            
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
         # Chequeamos si el mensaje va hacia la izquierda o va hacia la derecha
         # viendo las posiciones de origen y destino
@@ -188,6 +203,7 @@ class routingSim:
                 paquete.router_actual.contador_paquetes_enviados += 1
 
             # Buscamos el próximo Router
+            threadReset = threading.Thread(target=paquete.router_actual.latencia, args=())
             paquete.router_actual = lista_activos.buscar_inst(paquete.router_actual.posicion, "posicion").prox.dato
 
             # Agregamos el paquete a la cola reenviar del proximo
@@ -210,7 +226,8 @@ class routingSim:
             else:
                 paquete.router_actual.cola_paquetes_propios.get()
                 paquete.router_actual.contador_paquetes_enviados += 1
-
+            if contador>50:
+                return None
             # Buscamos el próximo Router
             paquete.router_actual = lista_activos.buscar_inst_anterior(paquete.router_actual.posicion,
                                                                        "posicion").dato  # Encuentra el router anterior
@@ -234,11 +251,15 @@ class routingSim:
 
             else:
                 paquete.router_actual.cola_paquetes_propios.get()
+            
+            if contador>50: #Por si se desactiva el router de destino una vez que el paquete fue enviado
+                return None
 
             # Lo sumamos a la lista de paquetes recibidos
             paquete.router_actual.lista_paquetes_recibidos.append(paquete)
+            
             paquete.router_actual.lista_paquetes_recibidos = sorted(paquete.router_actual.lista_paquetes_recibidos,
-                                                                    key=lambda x: x.router_origen.posicion)
+                                                      key=lambda x: (x.router_origen.posicion, x.hora_creacion))
             return None
 
     def crear_csv(self):

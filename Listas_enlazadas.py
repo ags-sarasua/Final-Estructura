@@ -124,10 +124,10 @@ class Lista():
     def buscar_inst(self,input_principal, atributo_principal):
         nodo=Nodo()
         nodo=self.head
-
         for i in range(self.len):
             if getattr(nodo.dato,atributo_principal)==input_principal:
                 #Si encontramos el nodo, lo devolvemos
                 return nodo
             nodo=nodo.prox
         print('b')
+        return False
