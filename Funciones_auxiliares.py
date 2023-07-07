@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
+from Clases import *
+import tkinter as tk
+import time
 
-def graficar(listaRouters):
+def graficar():
+    global listaRouters
     #Creamos las listas donde irán los datos de las columnas y filas del gráfico
     router_id = []
     paquetes_enviados = []
@@ -76,3 +80,8 @@ def validarNum(min: int, max: int) -> int:
         #El programa se rompe si el usuario no ingresa un número
         except:
             print("Error, tiene que ingresar un número. intente de nuevo")
+
+
+
+
+
