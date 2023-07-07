@@ -172,7 +172,6 @@ class routingSim:
             with open("router_" + str(router_sin_mensajes.posicion), "w") as archivo:
                 archivo.write("Este router no ha recibido mensajes\n")
 
-
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
         # Chequeamos si el mensaje va hacia la izquierda o va hacia la derecha
         # viendo las posiciones de origen y destino
@@ -195,6 +194,9 @@ class routingSim:
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador += 1
 
+            # tomamos en cuenta la latencia para mandar el paquete
+            time.sleep(paquete.router_actual.latencia)
+
             self.enviar_paquetes(paquete, lista_activos, contador)  # Llamada recursiva con router_actual actualizado
 
             return None
@@ -216,6 +218,9 @@ class routingSim:
             # Agregamos el paquete a la cola reenviar del anterior
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
             contador += 1
+
+            # tomamos en cuenta la latencia para mandar el paquete
+            time.sleep(paquete.router_actual.latencia)
 
             self.enviar_paquetes(paquete, lista_activos, contador)  # Llamada recursiva con router_actual actualizado
 

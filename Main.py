@@ -83,12 +83,16 @@ def main():
     # Ejecutamos las 2 funciones a través de los Threads
     t1.start()
     t2.start()
-    routingSim.crear_csv(eventosRouters)  # Escribimos el system_log
-    routingSim.routers_txt(listaRouters) #Escribimos los mensajes recibidos en txt
-    graficar(listaRouters)  # Graficamos los eventos de cada Router
+
 
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
+
+    #Matamos la thread 2 en caso que no haya terminado la simulacion
+    t2.join(timeout=0)
+    routingSim.crear_csv(eventosRouters)  # Escribimos el system_log
+    routingSim.routers_txt(listaRouters)  # Escribimos los mensajes recibidos en txt
+    graficar(listaRouters)  # Graficamos los eventos de cada Router
 
     tasa_paquetes = routingSim.tasa_de_paquetes(listaRouters)
     for tasa in tasa_paquetes:
@@ -97,10 +101,6 @@ def main():
     print("Fin del programa")
     # Terminamos la ejecución del programa
     os._exit(0)
-
-    # prueba para ver el orden de los mensajes en la lista de paqutes recibidos
-    for paquete in listaRouters.buscar_inst(5, "posicion").dato.lista_paquetes_recibidos:
-        print(paquete.mensaje)
 
 
 main()
