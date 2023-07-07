@@ -63,6 +63,25 @@ def simular(duracion):
     except IndexError:
         print("Error. El router especificado no existe.")
 
+    try:
+        # Volvemos a activar el Router desactivado
+        listaRouters.buscar_inst(6, "posicion").dato.activar()
+    except IndexError:
+        print("Error. El router especificado no existe.")
+
+    try:
+        # Volvemos a activar el Router desactivado
+        listaRouters.buscar_inst(6, "posicion").dato.reiniciar()
+    except IndexError:
+        print("Error. El router especificado no existe.")
+
+    Router_7 = Router(7)    
+    try:
+        # Desactivamos un Router
+        listaRouters.buscar_inst(7, "posicion").dato.desactivar()
+        # Router.desactivar(listaRouters.buscar_inst(1, "posicion").dato)
+    except IndexError:
+        print("Error. El router especificado no existe.")
 
 def timer(tiempo_espera):
     time.sleep(tiempo_espera)
@@ -104,3 +123,7 @@ def main():
 
 
 main()
+
+"""
+Bueno lo qe
+"""
