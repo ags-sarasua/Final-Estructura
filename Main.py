@@ -90,6 +90,10 @@ def main():
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
 
+    tasa_paquetes = routingSim.tasa_de_paquetes(listaRouters)
+    for tasa in tasa_paquetes:
+        print(tasa)
+
     print("Fin del programa")
     # Terminamos la ejecución del programa
     os._exit(0)

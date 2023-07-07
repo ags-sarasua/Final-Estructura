@@ -172,6 +172,7 @@ class routingSim:
             with open("router_" + str(router_sin_mensajes.posicion), "w") as archivo:
                 archivo.write("Este router no ha recibido mensajes\n")
 
+
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
         # Chequeamos si el mensaje va hacia la izquierda o va hacia la derecha
         # viendo las posiciones de origen y destino
@@ -247,3 +248,17 @@ class routingSim:
                 writer.writerow([router, fecha_evento, evento])
 
         print("Se han guardado los eventos en el archivo CSV.")
+
+    def tasa_de_paquetes(listaRouters):
+        nodo_actual = listaRouters.head
+        tasa_paquetes = []
+
+        while nodo_actual is not None:
+            router = nodo_actual.dato
+            paquetes_enviados = router.contador_paquetes_enviados
+            paquetes_recibidos = len(router.lista_paquetes_recibidos)
+            tasa_paquetes.append(
+                f"Router {router.posicion}: {paquetes_enviados} paquete/s enviados, {paquetes_recibidos} recibido/s")
+            nodo_actual = nodo_actual.prox
+
+        return tasa_paquetes
