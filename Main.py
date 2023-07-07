@@ -1,12 +1,12 @@
 import threading
 from Clases import *
 from Listas_enlazadas import *
-from Funciones_auxiliares import validarNum, graficar,cuenta_regresiva_popup
+from Funciones_auxiliares import validarNum, graficar, cuenta_regresiva_popup
 import os
 
 
 # Función simular: solo recibe la duración de la misma, en segundos.
-def simular(duracion,simulacion):
+def simular(simulacion):
     # Llamado a variables globales (si las llamábamos más abajo, se rompía el código)
     global listaRouters
     global listaActivos
@@ -58,9 +58,9 @@ def main():
     
     # Creamos los Threads de simulación y el del timer que limitará a la simulación
     t1 = threading.Thread(target=timer, args=(tiempo_simulacion,))
-    t2 = threading.Thread(target=simular, args=(tiempo_simulacion,simulacion,))
-    #t3 = threading.Thread(target=cuenta_regresiva_popup, args=(20,))
-    #t3.start()
+    t2 = threading.Thread(target=simular, args=(simulacion,))
+    t3 = threading.Thread(target=cuenta_regresiva_popup, args=(tiempo_simulacion,))
+    t3.start()
     # Ejecutamos las 2 funciones a través de los Threads
     t1.start()
     t2.start()
