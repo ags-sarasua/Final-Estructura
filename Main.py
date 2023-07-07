@@ -4,11 +4,14 @@ from Listas_enlazadas import *
 from Funciones_auxiliares import validarNum, graficar
 import os
 
-
+#Función simular: solo recibe la duración de la misma, en segundos.
 def simular(duracion):
+    #Llamado a variables globales (si las llamábamos más abajo, se rompía el código)
     global listaRouters
     global listaActivos
     global eventosRouters
+
+    #Creamos los Routers
     Router_1=Router(1)
     Router_2=Router(2)
     Router_3=Router(3)
@@ -16,48 +19,73 @@ def simular(duracion):
     Router_5=Router(5)
     Router_6=Router(6)
 
+    #Creamos el objeto simulación y algunos paquetes para mandar
     simulacion = routingSim(duracion)
     paquete1 = Paquete("nINFAAAAA", Router_5, Router_1)
     paquete2 = Paquete("nINFAAAAA", Router_3, Router_5)
+
+    #Enviamos los paquetes creados
     simulacion.enviar_paquetes(paquete1, listaActivos)
     simulacion.enviar_paquetes(paquete2, listaActivos)
 
     try:
-        listaRouters.buscar_inst(1, "posicion").dato.reiniciar()
-        #Router.reiniciar(listaRouters.buscar_inst(1, "posicion").dato)
-    except IndexError:
-        print("Error. El router especificado no existe.")
-    try:
-        listaRouters.buscar_inst(1, "posicion").dato.desactivar()
+        #Desactivamos un Router
+        listaRouters.buscar_inst(2, "posicion").dato.desactivar()
         #Router.desactivar(listaRouters.buscar_inst(1, "posicion").dato)
     except IndexError:
         print("Error. El router especificado no existe.")
 
     try:
-        listaRouters.buscar_inst(1, "posicion").dato.activar()
+        #Reiniciamos un Router
+        listaRouters.buscar_inst(1, "posicion").dato.reiniciar()
+        #Router.reiniciar(listaRouters.buscar_inst(1, "posicion").dato)
+    except IndexError:
+        #Puede pasar que se le de como parámetro un Router inexistente 
+        # (como trabajamos con una lista, se estaría dando un índice erróneo que rompe el programa)
+        print("Error. El router especificado no existe.")
+
+    try:
+        #Desactivamos un Router
+        listaRouters.buscar_inst(6, "posicion").dato.desactivar()
+        #Router.desactivar(listaRouters.buscar_inst(1, "posicion").dato)
+    except IndexError:
+        print("Error. El router especificado no existe.")        
+    
+    try:
+        #Volvemos a activar el Router desactivado
+        listaRouters.buscar_inst(2, "posicion").dato.activar()
     except IndexError:
         print("Error. El router especificado no existe.")
 
-
-
 def timer(tiempo_espera):
     time.sleep(tiempo_espera)
-
 
 def main():
     global listaRouters
     global listaActivos
     global eventosRouters
+
+    #Pedimos un tiempo de simulación al usuario, validando que sea un número entre 0 y 100000000
     tiempo_simulacion = validarNum(0, 100000000)
+
+    #Creamos los Threads de simulación y el del timer que limitará a la simulación
     t1 = threading.Thread(target=timer, args=(tiempo_simulacion,))
     t2 = threading.Thread(target=simular, args=(tiempo_simulacion,))
 
+    #Ejecutamos las 2 funciones a través de los Threads
     t1.start()
     t2.start()
+
+    #Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
-    print("Listo el pollo!")
-    routingSim.crear_csv(eventosRouters)
-    graficar(listaRouters)
+
+    print("Fin del programa")
+
+
+    routingSim.crear_csv(eventosRouters) #Escribimos el system_log
+    graficar(listaRouters) #Graficamos los eventos de cada Router
+
+    #Terminamos la ejecución del programa
     os._exit(0)
 
 
