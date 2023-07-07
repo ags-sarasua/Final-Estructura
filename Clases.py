@@ -139,8 +139,33 @@ class routingSim:
         self.duracion = duracion
         self.registro_evento = []
 
-    def routers(self):
-        pass
+    def routers_txt(listaRouters):
+        nodo_actual = listaRouters.head
+        while nodo_actual is not None:
+
+            router = nodo_actual.dato
+            with open("router_"+str(router.posicion), "a") as archivo:
+                if len(router.lista_paquetes_recibidos)==0:
+                    archivo.write("Este router no ha recibido mensajes")
+                else:
+                    sublistas = {}
+
+                    for paquete in router.lista_paquetes_recibidos:
+                        posicion = paquete.router_origen.posicion
+                        if posicion not in sublistas:
+                            sublistas[posicion] = []
+                        sublistas[posicion].append(paquete.mensaje)
+
+                    for posicion, sublist in sublistas.items():
+                        archivo.write("Origen: Router "+str(posicion)+"\n\n")
+                        for mensaje in sublist:
+                            archivo.write(mensaje+"\n")
+
+            nodo_actual=nodo_actual.prox   
+
+
+                    
+        
 
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
         #Chequeamos si el mensaje va hacia la izquierda o va hacia la derecha 
@@ -199,8 +224,8 @@ class routingSim:
                 paquete.router_actual.cola_paquetes_propios.get()
 
             #Lo sumamos a la lista de paquetes recibidos
-            paquete.router_actual.lista_paquetes_recibidos.append(paquete)   
-            
+            paquete.router_actual.lista_paquetes_recibidos.append(paquete) 
+            paquete.router_actual.lista_paquetes_recibidos=sorted(paquete.router_actual.lista_paquetes_recibidos, key=lambda x: x.router_origen.posicion)
             return None
 
     def crear_csv(self):

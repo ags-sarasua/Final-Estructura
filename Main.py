@@ -21,12 +21,24 @@ def simular(duracion):
 
     #Creamos el objeto simulación y algunos paquetes para mandar
     simulacion = routingSim(duracion)
-    paquete1 = Paquete("nINFAAAAA", Router_5, Router_1)
-    paquete2 = Paquete("nINFAAAAA", Router_3, Router_5)
+    """paquete1 = Paquete("nINFAAAAA", Router_5, Router_1)
+    paquete2 = Paquete("nINFAAAAA", Router_3, Router_5)"""
+    paquete3 = Paquete("nINFAAAAA 1 ", Router_1, Router_5)
+    paquete4 = Paquete("nINFAAAAA 1 del 2", Router_2, Router_5)
+    paquete5 = Paquete("nINFAAAAA 1 del 3", Router_3, Router_5)
+    paquete6 = Paquete("nINFAAAAA 2 del 2", Router_2, Router_5)
+    paquete7 = Paquete("nINFAAAAA 3 del 2", Router_2, Router_5)
+    paquete8 = Paquete("nINFAAAAA 2 del 3", Router_3, Router_5)
 
     #Enviamos los paquetes creados
-    simulacion.enviar_paquetes(paquete1, listaActivos)
-    simulacion.enviar_paquetes(paquete2, listaActivos)
+    """simulacion.enviar_paquetes(paquete1, listaActivos)
+    simulacion.enviar_paquetes(paquete2, listaActivos)"""
+    simulacion.enviar_paquetes(paquete3, listaActivos)
+    simulacion.enviar_paquetes(paquete4, listaActivos)
+    simulacion.enviar_paquetes(paquete5, listaActivos)
+    simulacion.enviar_paquetes(paquete6, listaActivos)
+    simulacion.enviar_paquetes(paquete7, listaActivos)
+    simulacion.enviar_paquetes(paquete8, listaActivos)
 
     try:
         #Desactivamos un Router
@@ -81,8 +93,12 @@ def main():
 
     print("Fin del programa")
 
-
+    #prueba para ver el orden de los mensajes en la lista de paqutes recibidos
+    for paquete in listaRouters.buscar_inst(5, "posicion").dato.lista_paquetes_recibidos:
+        print (paquete.mensaje)
+        
     routingSim.crear_csv(eventosRouters) #Escribimos el system_log
+    routingSim.routers_txt(listaRouters)
     graficar(listaRouters) #Graficamos los eventos de cada Router
 
     #Terminamos la ejecución del programa
