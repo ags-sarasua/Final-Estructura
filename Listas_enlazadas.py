@@ -65,9 +65,9 @@ class Lista():
             nodo_mov2 = nodo_mov2.prox
 
         #Ponemos al nodo en la posición adecuada
-        nuevo_nodo=nodo_mov2.prox
+        nuevo_nodo.prox=nodo_mov2.prox
         nodo_mov2.prox=nuevo_nodo
-
+        print(self)
         #Devolvemos la lista ordenada
         return self
     
@@ -118,7 +118,6 @@ class Lista():
                 #Si encontramos el nodo (viendo cuál es el próximo), lo devolvemos
                 return nodo
             nodo=nodo.prox
-        print('b')
         return False
     
     def buscar_inst(self,input_principal, atributo_principal):
@@ -129,5 +128,4 @@ class Lista():
                 #Si encontramos el nodo, lo devolvemos
                 return nodo
             nodo=nodo.prox
-        print('b')
         return False
