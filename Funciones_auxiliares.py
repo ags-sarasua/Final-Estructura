@@ -3,22 +3,33 @@ from Clases import *
 import tkinter as tk
 import time
 
+
 def timer(tiempo_espera):
+    """
+    Pausa la ejecución del programa durante un tiempo determinado.
+    :param tiempo_espera: Tiempo en segundos que se desea esperar.
+    :return: None
+    """
     time.sleep(tiempo_espera)
 
+
 def graficar():
+    """
+    Genera un gráfico con la cantidad de paquetes enviados y recibidos por cada router.
+    :return: None
+    """
     global listaRouters
-    #Creamos las listas donde irán los datos de las columnas y filas del gráfico
+    # Creamos las listas donde irán los datos de las columnas y filas del gráfico
     router_id = []
     paquetes_enviados = []
     paquetes_recibidos = []
 
-    #Arrancamos por el 1er Router de todos
+    # Arrancamos por el 1er Router de todos
     nodo_actual = listaRouters.head
 
-    #Trabajamos con los Routers uno a uno hasta llegar al final 
+    # Trabajamos con los Routers uno a uno hasta llegar al final
     while nodo_actual is not None:
-        #Vamos llenando las listas con el nro de Router y la cantidad de enviados/Recibidos
+        # Vamos llenando las listas con el nro de Router y la cantidad de enviados/Recibidos
 
         router = nodo_actual.dato
         router_id.append(router.posicion)
@@ -29,12 +40,11 @@ def graficar():
         recibidos = len(router.lista_paquetes_recibidos)
         paquetes_recibidos.append(recibidos)
 
-        #Pasamos al Router siguiente
+        # Pasamos al Router siguiente
         nodo_actual = nodo_actual.prox
 
-    #Creamos una figura con dos subgráficos
+    # Creamos una figura con dos subgráficos
     fig, (plot1, plot2) = plt.subplots(1, 2, figsize=(10, 4))
-
 
     # Graph para paquetes enviados
     plot1.set_title("Paquetes enviados por Router", fontsize=15, color="black")
@@ -54,15 +64,23 @@ def graficar():
     # Ajustamos automáticamente el espaciado entre los subgráficos en la figura
     fig.tight_layout()
 
-    #Mostramos el gráfico
+    # Mostramos el gráfico
     plt.show()
 
-#Función auxiliar para validar un número ingresado por el usuario
+
+# Función auxiliar para validar un número ingresado por el usuario
 def validarNum(min: int, max: int) -> int:
+    """
+    Valida y retorna un número entero ingresado por el usuario.
+
+    :param min: Valor mínimo permitido.
+    :param max: Valor máximo permitido.
+    :return: El número entero válido ingresado por el usuario.
+    """
     ingresado = min - 1
     booleana = False
 
-    #Hacemos un loop para que el usuario ingrese el número tantas veces como sea necesario hasta que sea válido
+    # Hacemos un loop para que el usuario ingrese el número tantas veces como sea necesario hasta que sea válido
     while (booleana == False):
         try:
             print('')
@@ -72,31 +90,44 @@ def validarNum(min: int, max: int) -> int:
                 print("Error, el número debe estar entre {} y {}".format(min, max))
             else:
                 return ingresado
-            
-        #El programa se rompe si el usuario no ingresa un número
+
+        # El programa se rompe si el usuario no ingresa un número
         except:
             print("Error, tiene que ingresar un número. intente de nuevo")
 
 
 def tipo_de_simulacion_funcion():
+    """
+    Solicita al usuario que seleccione el tipo de simulación y devuelve el tiempo de retraso correspondiente.
+    :return: El tiempo de retraso seleccionado para la simulación.
+    """
     print('1)Rapida   2)Normal   3)Lenta')
-    tiempo_de_retraso=0
-    tipo_de_simulacion=int(input(Fore.GREEN + "\033[1mIngrese un tipo de simulacion por su respectivo numero:       \033[0m"))
-    while tipo_de_simulacion!=1 and tipo_de_simulacion!=2 and tipo_de_simulacion!=3:
-         tipo_de_simulacion=int(input(Fore.GREEN + "\033[1mIngrese nuevamente un tipo de simulacion por su respectivo numero:     \033[0m"))
-    if tipo_de_simulacion==1:
-        tiempo_de_retraso=0.2
-    if tipo_de_simulacion==2:
-        tiempo_de_retraso=0.5
-    if tipo_de_simulacion==3:
-        tiempo_de_retraso=1.2
-        
+    tiempo_de_retraso = 0
+    tipo_de_simulacion = input(Fore.GREEN + "\033[1mIngrese un tipo de simulacion por su respectivo numero:       \033[0m")
+    while tipo_de_simulacion not in {'1', '2', '3'}:
+        tipo_de_simulacion = input(Fore.GREEN + "\033[1mIngrese nuevamente un tipo de simulacion por su respectivo numero:     \033[0m")
+
+    tiempos = {
+        '1': 0.2,
+        '2': 0.5,
+        '3': 1.2
+    }
+    tiempo_de_retraso = tiempos.get(tipo_de_simulacion)
+
     return tiempo_de_retraso
 
 
+
 def cuenta_regresiva_popup(duracion_total):
+    """
+    Muestra una ventana emergente con una cuenta regresiva.
+    :param duracion_total: La duración total de la cuenta regresiva en segundos.
+    """
     # Función para actualizar la cuenta regresiva
     def actualizar_cuenta_regresiva():
+        """
+        Actualiza la cuenta regresiva en la etiqueta y programa la próxima actualización.
+        """
         nonlocal tiempo_restante  # Utilizar la variable de nivel superior
         if tiempo_restante >= 0:
             etiqueta.config(text=f"Tiempo restante: {tiempo_restante} segundos")
@@ -121,6 +152,3 @@ def cuenta_regresiva_popup(duracion_total):
 
     # Mostrar la ventana
     ventana.mainloop()
-
-
-
