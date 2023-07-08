@@ -362,6 +362,7 @@ class routingSim:
 
             # Agregamos el paquete a la cola reenviar del proximo
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
+            print(f'El paquete con ({paquete.mensaje}) va por el router {paquete.router_actual}')
             contador += 1
 
             # tomamos en cuenta la latencia para mandar el paquete
@@ -385,6 +386,7 @@ class routingSim:
 
             # Agregamos el paquete a la cola reenviar del anterior
             paquete.router_actual.cola_paquetes_reenviar.put(paquete)
+            print(f'El paquete con ({paquete.mensaje}) va por el router {paquete.router_actual}')
             contador += 1
 
             # tomamos en cuenta la latencia para mandar el paquete
