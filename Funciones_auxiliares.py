@@ -34,12 +34,7 @@ def graficar():
 
     #Creamos una figura con dos subgráficos
     fig, (plot1, plot2) = plt.subplots(1, 2, figsize=(10, 4))
-    """ 
-    En plt.subplots:
-        El 1 indica que habrá una sola fila de subgráficos 
-        El 2 indica que habrá dos columnas de subgráficos
-        El figsize=(10, 4) nos da ancho y alto respectivamente
-    """
+
 
     # Graph para paquetes enviados
     plot1.set_title("Paquetes enviados por Router", fontsize=15, color="black")
@@ -47,10 +42,6 @@ def graficar():
     plot1.set_ylabel("Paquetes manipulados")
     plot1.bar(router_id, paquetes_enviados, color="cyan", label="Paquetes enviados")
 
-    """
-    Ponemos el localizador principal del eje 'Y' (o sea, la ubicación de las marcas dentro de ese eje) 
-    como MaxNLocator de parámetro integer=True, para así hacer que los números del eje Y sean enteros. 
-    """
     plot1.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
     # Graph para paquetes recibidos
@@ -85,6 +76,23 @@ def validarNum(min: int, max: int) -> int:
         #El programa se rompe si el usuario no ingresa un número
         except:
             print("Error, tiene que ingresar un número. intente de nuevo")
+
+
+def tipo_de_simulacion_funcion():
+    print('1)Rapida   2)Normal   3)Lenta')
+    tiempo_de_retraso=0
+    tipo_de_simulacion=int(input(Fore.GREEN + "\033[1mIngrese un tipo de simulacion por su respectivo numero:       \033[0m"))
+    while tipo_de_simulacion!=1 and tipo_de_simulacion!=2 and tipo_de_simulacion!=3:
+         tipo_de_simulacion=int(input(Fore.GREEN + "\033[1mIngrese nuevamente un tipo de simulacion por su respectivo numero:     \033[0m"))
+    if tipo_de_simulacion==1:
+        tiempo_de_retraso=0.2
+    if tipo_de_simulacion==2:
+        tiempo_de_retraso=0.5
+    if tipo_de_simulacion==3:
+        tiempo_de_retraso=1.2
+        
+    return tiempo_de_retraso
+
 
 def cuenta_regresiva_popup(duracion_total):
     # Función para actualizar la cuenta regresiva

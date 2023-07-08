@@ -48,15 +48,15 @@ class Lista():
         nodo_mov1=Nodo()
         nodo_mov1=self.head
         
-        if nodo_mov1==None:
-            #Si la lista está vacía
+        if nodo_mov1.prox==None:
             return self
         
         #Nos movemos al siguiente nodo hasta el final de la lista
-        while nodo_mov1.prox is not None:
+        while nodo_mov1.prox.prox is not None:
             nodo_mov1 = nodo_mov1.prox
-
-        nuevo_nodo=nodo_mov1
+        nuevo_nodo=nodo_mov1.prox
+        nodo_mov1.prox=None
+        
         #Volveremos a recorrer la lista desde el principio con un nuevo nodo
         nodo_mov2=self.head
 
@@ -67,7 +67,6 @@ class Lista():
         #Ponemos al nodo en la posición adecuada
         nuevo_nodo.prox=nodo_mov2.prox
         nodo_mov2.prox=nuevo_nodo
-        print(self)
         #Devolvemos la lista ordenada
         return self
     

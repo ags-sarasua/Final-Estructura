@@ -55,6 +55,7 @@ class Router:
         global listaRouters
         if listaRouters.buscar_inst(numero, "posicion"):
             print(Fore.RED + f'\033[1mNo se ha podido agregar el router {numero} debido a su preexistencia\033[0m')
+            print('')
             return False
         else:
             return True
@@ -68,8 +69,10 @@ class Router:
             router.activar_mecanica()
         elif type(router)==int:
             print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')  
+            print('')
         else:
             print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m')  
+            print('')
 
     def activar_mecanica(self):
         # Para activar el ruter, no tiene que estar activo
@@ -86,8 +89,11 @@ class Router:
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "ACTIVO"))
+            print(Fore.GREEN+ f'\033[1mEl router {self.posicion} se puso en ACTIVO\033[0m')
+            print('')
         else:
             print(f"El router {self.posicion} ya se encontraba activo")
+            print('')
 
     @staticmethod 
     def desactivar(router):
@@ -95,8 +101,10 @@ class Router:
             router.desactivar_mecanica()
         elif type(router)==int:
             print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')  
+            print('')
         else:
-            print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m')        
+            print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m')  
+            print('')      
 
     def desactivar_mecanica(self):
         global eventosRouters
@@ -113,8 +121,11 @@ class Router:
 
             # Eliminamos al Router de la lista de Routers activos
             listaActivos.pop(self.posicion, "posicion")
+            print(Fore.RED+ f'\033[1mEl router {self.posicion} se puso INACTIVO\033[0m')
+            print('')
         else:
             print(Fore.RED + f'\033[1mError, el Router {self.posicion} no está activo. Por ende no se puede desactivar \033[0m')
+            print('')
     
     
     @staticmethod 
@@ -122,9 +133,11 @@ class Router:
         if type(router)==Router:
             router.reiniciar_mecanica()
         elif type(router)==int:
-            print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')  
+            print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')
+            print('')  
         else:
            print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m') 
+           print('')
                         
     def reiniciar_mecanica(self):
         global listaActivos
@@ -138,7 +151,8 @@ class Router:
             
             self.estado = "RESET"
             listaActivos.pop(self.posicion, "posicion")
-
+            print(Fore.RED+ f'\033[1mEl router {self.posicion} esta en RESET\033[0m')
+            print('')
             # Guardamos los datos del evento para el CSV
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
@@ -149,7 +163,8 @@ class Router:
             # Volvemos a activar el router
             Router.activar(self)
         else:
-            print(Fore.RED + f'\033[1mError, el Router {self.posicion} no está activo. Por ende no se puede reiniciar033[0m')
+            print(Fore.RED + f'\033[1mError, el Router {self.posicion} no está activo. Por ende no se puede reiniciar\033[0m')
+            print('')
 
     def funcion_latencia(self):
         global listaActivos
@@ -215,10 +230,16 @@ class routingSim:
                 archivo.write("Este router no ha recibido mensajes\n")
     
     def prioridad_enviar_paquetes(self, paquete: Paquete,listaActivos: Lista):
+        if listaRouters.buscar_inst(paquete.router_origen.posicion,"posicion").dato.estado=='INACTIVO' or listaRouters.buscar_inst(paquete.router_destino.posicion,"posicion").dato.estado=='INACTIVO' :
+                print(Fore.RED + f'\033[1mEl paquete con ({paquete.mensaje}) no se pudo enviar porque el  router {paquete.router_actual.posicion} se encuentra inactivo\033[0m')
+                print('')
+                return None
         while True:    
             if Queue.qsize(paquete.router_origen.cola_paquetes_reenviar)==0 and listaActivos.buscar_inst(paquete.router_origen.posicion,"posicion") and listaActivos.buscar_inst(paquete.router_destino.posicion,"posicion"):
+                print(f'El paquete con ({paquete.mensaje}) esta en camino')
+                print('')
                 self.enviar_paquetes(paquete, listaActivos)
-                return print('El paquete esta en camino')
+                return None
             timer(0.1)
             
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
@@ -235,7 +256,7 @@ class routingSim:
                 paquete.router_actual.cola_paquetes_propios.get()  # Este get solo se usa para eliminar el primero de la queue
                 # Anotamos que mandamos un paquete más
                 paquete.router_actual.contador_paquetes_enviados += 1
-
+            
             # Buscamos el próximo Router
             threading.Thread(target=paquete.router_actual.funcion_latencia, args=())
             paquete.router_actual = lista_activos.buscar_inst(paquete.router_actual.posicion, "posicion").prox.dato
@@ -246,9 +267,7 @@ class routingSim:
 
             # tomamos en cuenta la latencia para mandar el paquete
             time.sleep(paquete.router_actual.latencia)    #JUSTIFICAR
-
-            self.enviar_paquetes(paquete, lista_activos, contador)  # Llamada recursiva con router_actual actualizado
-
+            self.enviar_paquetes(paquete, listaActivos,contador)   # Llamada recursiva con router_actual actualizado
             return None
 
         elif paquete.router_actual.posicion > paquete.router_destino.posicion:  # Va para la izquierda
@@ -256,12 +275,10 @@ class routingSim:
             if contador != 0:
                 paquete.router_actual.contador_paquetes_reenviados += 1
                 paquete.router_actual.cola_paquetes_reenviar.get()
-
             else:
                 paquete.router_actual.cola_paquetes_propios.get()
                 paquete.router_actual.contador_paquetes_enviados += 1
-            if contador>50:
-                return None
+            
             # Buscamos el próximo Router
             threading.Thread(target=paquete.router_actual.funcion_latencia, args=())
             paquete.router_actual = lista_activos.buscar_inst_anterior(paquete.router_actual.posicion,
@@ -273,9 +290,7 @@ class routingSim:
 
             # tomamos en cuenta la latencia para mandar el paquete
             time.sleep(paquete.router_actual.latencia)
-
-            self.enviar_paquetes(paquete, lista_activos, contador)  # Llamada recursiva con router_actual actualizado
-
+            self.enviar_paquetes(paquete, listaActivos,contador)  # Llamada recursiva con router_actual actualizado
             return None
 
         elif paquete.router_actual.posicion == paquete.router_destino.posicion:  # Encuentra el router de destino
@@ -292,7 +307,8 @@ class routingSim:
 
             # Lo sumamos a la lista de paquetes recibidos
             paquete.router_actual.lista_paquetes_recibidos.append(paquete)
-            
+            print(Fore.GREEN + f'\033[1mEl paquete con {paquete.mensaje} ha llegado a su destino\033[0m')
+            print('')
             paquete.router_actual.lista_paquetes_recibidos = sorted(paquete.router_actual.lista_paquetes_recibidos,
                                                       key=lambda x: (x.router_origen.posicion, x.hora_creacion))
             return None
@@ -307,6 +323,11 @@ class routingSim:
             for router, fecha_evento, evento in eventosRouters:
                 # Escribimos por línea como se pide en las consignas
                 writer.writerow([router, fecha_evento, evento])
+        print('__________________________________________')
+        print('')
+        print('')
+        print('')
+        print('')
         print('')
         print(Fore.GREEN + '\033[1mSe han guardado los eventos en el archivo CSV.\033[0m')
         
@@ -324,6 +345,7 @@ class routingSim:
                 f"Router {router.posicion}: {paquetes_enviados} paquete/s enviados, {paquetes_recibidos} recibido/s")
             nodo_actual = nodo_actual.prox
         for tasa in tasa_paquetes:
+            time.sleep(0.5) #SOLO PARA MEJORAR LA VISUA;
             print(tasa)
         print('')
         return None
