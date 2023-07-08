@@ -74,7 +74,9 @@ def validarNum(min: int, max: int) -> int:
     #Hacemos un loop para que el usuario ingrese el número tantas veces como sea necesario hasta que sea válido
     while (booleana == False):
         try:
-            ingresado = int(input("Ingrese tiempo de simulación: "))
+            print('')
+            ingresado = int(input(Fore.GREEN + "\033[1mIngrese tiempo de simulación:  \033[0m"))
+            print('')
             if (ingresado < min or ingresado > max):
                 print("Error, el número debe estar entre {} y {}".format(min, max))
             else:

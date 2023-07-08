@@ -5,6 +5,7 @@ import csv
 import random
 import threading
 from Listas_enlazadas import *
+from colorama import init, Fore, Back, Style
 
 # Usamos listas como variables globales porque las necesitábamos modificar
 # cada vez que usábamos los métodos del Router: init, activar, desactivar y reiniciar.
@@ -44,7 +45,7 @@ class Router:
         listaActivos.append(Nodo(self))
         listaActivos.ordenar()
 
-        # Guardamos los datos del evento para el CCV
+        # Guardamos los datos del evento para el CSV
         nombre = "ROUTER_" + str(self.posicion)
         fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
         eventosRouters.append((nombre, fecha_evento, "ACTIVO"))
@@ -53,19 +54,22 @@ class Router:
     def check_router_unico(numero): #True o False _ checkea posicion 
         global listaRouters
         if listaRouters.buscar_inst(numero, "posicion"):
-            print(f'No se ha podido agregar el router {numero} debido a su preexistencia')
+            print(Fore.RED + f'\033[1mNo se ha podido agregar el router {numero} debido a su preexistencia\033[0m')
             return False
         else:
             return True
+    
+    def __str__(self):
+        return f"Posicion: {self.posicion}, Estado: {self.estado}, Latencia: {self.latencia}"
     
     @staticmethod 
     def activar(router): #True o False _ checkea posicion 
         if type(router)==Router:
             router.activar_mecanica()
         elif type(router)==int:
-            print(f'El router {router} no existe. Recuerde pasar un objeto router')  
+            print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')  
         else:
-            print(f'El {router} no existe. Recuerde pasar un objeto router')  
+            print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m')  
 
     def activar_mecanica(self):
         # Para activar el ruter, no tiene que estar activo
@@ -78,23 +82,22 @@ class Router:
             listaActivos.append(Nodo(self))
             listaActivos.ordenar()
 
-            # Guardamos los datos del evento para el CCV
+            # Guardamos los datos del evento para el CSV
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "ACTIVO"))
-
         else:
-            print("Ya estaba activo")
+            print(f"El router {self.posicion} ya se encontraba activo")
 
     @staticmethod 
     def desactivar(router):
         if type(router)==Router:
             router.desactivar_mecanica()
         elif type(router)==int:
-            print(f'El router {router} no existe. Recuerde pasar un objeto router')  
+            print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')  
         else:
-            print(f'El {router} no existe. Recuerde pasar un objeto router')          
-        
+            print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m')        
+
     def desactivar_mecanica(self):
         global eventosRouters
         global listaActivos
@@ -103,7 +106,7 @@ class Router:
             # Actualizamos el estado
             self.estado = "INACTIVO"
 
-            # Guardamos los datos del evento para el CCV
+            # Guardamos los datos del evento para el CSV
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "INACTIVO"))
@@ -111,7 +114,7 @@ class Router:
             # Eliminamos al Router de la lista de Routers activos
             listaActivos.pop(self.posicion, "posicion")
         else:
-            print("Error, el Router especificado no está activo")
+            print(Fore.RED + f'\033[1mError, el Router {self.posicion} no está activo. Por ende no se puede desactivar \033[0m')
     
     
     @staticmethod 
@@ -119,9 +122,9 @@ class Router:
         if type(router)==Router:
             router.reiniciar_mecanica()
         elif type(router)==int:
-            print(f'El router {router} no existe. Recuerde pasar un objeto router')  
+            print(Fore.RED + f'\033[1mEl router {router} no existe. Recuerde pasar un objeto router\033[0m')  
         else:
-            print(f'El {router} no existe. Recuerde pasar un objeto router')  
+           print(Fore.RED + f'\033[1mEl {router} no existe. Recuerde pasar un objeto router\033[0m') 
                         
     def reiniciar_mecanica(self):
         global listaActivos
@@ -133,22 +136,20 @@ class Router:
             # Activamos el thread
             threadTiempo.start()
             
-            
             self.estado = "RESET"
             listaActivos.pop(self.posicion, "posicion")
 
-            # Guardamos los datos del evento para el CCV
+            # Guardamos los datos del evento para el CSV
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "EN_RESET")) 
-            
 
             threadTiempo.join()  # Esperamos a que termine de pasar el tiempo de reset
 
             # Volvemos a activar el router
             Router.activar(self)
         else:
-            print("Error, el Router especificado no está activo")
+            print(Fore.RED + f'\033[1mError, el Router {self.posicion} no está activo. Por ende no se puede reiniciar033[0m')
 
     def funcion_latencia(self):
         global listaActivos
@@ -156,7 +157,7 @@ class Router:
         time.sleep(self.latencia)
         listaActivos.append(Nodo(self))
         listaActivos.ordenar()
-    
+        
 class Paquete:
     def __init__(self, mensaje: str, router_origen: Router, router_destino: Router):
         self.mensaje = mensaje
@@ -172,6 +173,12 @@ class Paquete:
         # Agregamos el paquete a la cola del Router de origen indicado
         router_origen.cola_paquetes_propios.put(self)
 
+    @staticmethod
+    def check_paquete(mensaje, router_origen, router_destino):
+        if type(mensaje)==str and type(router_origen)==Router and type(router_destino)==Router:
+            return True
+        return False
+        
 
 class routingSim:
     def __init__(self, duracion):
@@ -206,7 +213,6 @@ class routingSim:
         for router_sin_mensajes in routers_sin_mensajes:
             with open("router_" + str(router_sin_mensajes.posicion), "w") as archivo:
                 archivo.write("Este router no ha recibido mensajes\n")
-
     
     def prioridad_enviar_paquetes(self, paquete: Paquete,listaActivos: Lista):
         while True:    
@@ -301,8 +307,9 @@ class routingSim:
             for router, fecha_evento, evento in eventosRouters:
                 # Escribimos por línea como se pide en las consignas
                 writer.writerow([router, fecha_evento, evento])
-
-        print("Se han guardado los eventos en el archivo CSV.")
+        print('')
+        print(Fore.GREEN + '\033[1mSe han guardado los eventos en el archivo CSV.\033[0m')
+        
 
     def tasa_de_paquetes(self):
         global listaRouters
@@ -318,4 +325,5 @@ class routingSim:
             nodo_actual = nodo_actual.prox
         for tasa in tasa_paquetes:
             print(tasa)
+        print('')
         return None
