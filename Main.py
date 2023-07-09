@@ -146,7 +146,7 @@ def main():
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
     termino=True
-    time.sleep(5)
+    time.sleep(5) # Por la dudas, por la operacion de threads
     print('__________________________________________')
     print(Fore.RED + '\033[1mEl tiempo ha terminado\033[0m')
     time.sleep(2)
