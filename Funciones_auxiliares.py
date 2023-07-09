@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from Clases import *
 import tkinter as tk
+from tkinter import font
 import time
 
 
@@ -119,39 +120,35 @@ def tipo_de_simulacion_funcion():
     return tiempo_de_retraso
 
 
-"""
-def cuenta_regresiva_popup(duracion_total):
+def cuenta_regresiva_popup(tiempo_simulacion):
+    # Crea la ventana popup
+
+    window = tk.Toplevel()
+    window.title("Cuenta Regresiva")
+    window.attributes("-topmost", True)  # Hacemos que la ventana esté siempre visible
+
+    # Se define el formato
+    fuente = font.Font(family="Times New Roman", size=24, weight="bold")
+    color = "crimson"
+
+    label = tk.Label(window, font=fuente, fg=color, padx=20, pady=10)
+    label.pack()
+
     
-    Muestra una ventana emergente con una cuenta regresiva.
-    :param duracion_total: La duración total de la cuenta regresiva en segundos.
-    
-    # Función para actualizar la cuenta regresiva
-    def actualizar_cuenta_regresiva():
-        
-        Actualiza la cuenta regresiva en la etiqueta y programa la próxima actualización.
-        
-        nonlocal tiempo_restante  # Utilizar la variable de nivel superior
-        if tiempo_restante >= 0:
-            etiqueta.config(text=f"Tiempo restante: {tiempo_restante} segundos")
-            tiempo_restante -= 1  # Actualizar el tiempo restante
-            ventana.after(1000, actualizar_cuenta_regresiva)
+    def countdown():
+        # Regula el funcionamiento de la cuenta regresiva en sí
+
+        nonlocal tiempo_simulacion
+        if tiempo_simulacion >= 0:
+            label.config(text=f"Esta simulación se AUTODESTRUIRÁ en: {tiempo_simulacion} segundos")
+            tiempo_simulacion -= 1
+            window.update()  # Se actualiza la ventana para que aparezca inmediatamente
+            window.after(1000, countdown)  # Se vuelve a llamar a la funcion despues de 1 segundo
         else:
-            ventana.destroy()
+            window.destroy()  # Se cierra la ventana cuando termine la cuenta regresiva
 
-    # Configuración de la ventana
-    ventana = tk.Tk()
-    ventana.title("Cuenta Regresiva")
-    ventana.geometry("300x100")
+    # Iniciamos la cuenta regresiva
+    countdown()
 
-    tiempo_restante = duracion_total
-
-    # Etiqueta para mostrar la cuenta regresiva
-    etiqueta = tk.Label(ventana, text=f"Tiempo restante: {tiempo_restante} segundos", font=("Arial", 16))
-    etiqueta.pack(pady=20)
-
-    # Actualizar la cuenta regresiva
-    ventana.after(0, actualizar_cuenta_regresiva)
-
-    # Mostrar la ventana
-    ventana.mainloop()
-"""
+    # Ejecutamos el bucle principal de la ventana
+    window.mainloop()

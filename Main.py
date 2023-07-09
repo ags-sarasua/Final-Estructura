@@ -3,7 +3,7 @@ import os
 from colorama import init, Fore, Back, Style
 from Clases import *
 from Listas_enlazadas import *
-from Funciones_auxiliares import validarNum, graficar, timer, tipo_de_simulacion_funcion
+from Funciones_auxiliares import validarNum, graficar, timer, tipo_de_simulacion_funcion, cuenta_regresiva_popup
 
 
 # Función simular: solo recibe la duración de la misma, en segundos.
@@ -137,11 +137,13 @@ def main():
     # Creamos los Threads de simulación y el del timer que limitará a la simulación
     t1 = threading.Thread(target=timer, args=(tiempo_simulacion,))
     t2 = threading.Thread(target=simular, args=(simulacion, tipo_de_simulacion))
-    #t3 = threading.Thread(target=cuenta_regresiva_popup, args=(tiempo_simulacion,))
-    #t3.start()
+    t3 = threading.Thread(target=cuenta_regresiva_popup, args=(tiempo_simulacion,))
+    
     # Ejecutamos las 2 funciones a través de los Threads
     t1.start()
     t2.start()
+    t3.start()
+
 
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
