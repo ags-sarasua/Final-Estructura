@@ -53,55 +53,55 @@ def simular(simulacion, tipo_de_simulacion):
 
     # Enviamos los paquetes creados
     simulacion.prioridad_enviar_paquetes(paquete1, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)  # SOLO PARA MEJORAR LA VISUAL CUANDO SE CORRE
     
     Router.desactivar(Router_6)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     Router.activar('Router3')
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete2, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete3, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete4, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     Router.reiniciar(Router_2)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete5, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete6, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete7, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     Router.desactivar(Router_2)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete8, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete9, listaActivos)
-    if termino==True: return None
+    if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
     simulacion.prioridad_enviar_paquetes(paquete10, listaActivos)
@@ -117,6 +117,7 @@ def main():
     global listaActivos
     global eventosRouters
     global termino
+    global condition
     
     print('')
     print('')
@@ -147,8 +148,12 @@ def main():
 
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
-    termino=True
-    time.sleep(5) # Por la dudas, por la operacion de threads
+    
+    lock.acquire() 
+    termino.valor=True
+    lock.release() #Cambia termino.valor para todos los threads
+    
+    time.sleep(2) # Por la dudas, por la operacion de threads
     print('__________________________________________')
     print(Fore.RED + '\033[1mEl tiempo ha terminado\033[0m')
     time.sleep(2)

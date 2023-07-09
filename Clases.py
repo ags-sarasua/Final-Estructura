@@ -13,11 +13,17 @@ global listaRouters
 global listaActivos
 global eventosRouters
 global termino
+global condition
 
+class Booleana:   # para que se guarde los valores a termino cuando los modificamos desde el main
+    def __init__(self):
+        self.valor=False
+        
 listaRouters = Lista()  # Lista enlazada
 listaActivos = Lista()  # Lista enlazada
 eventosRouters = []  # Lista secuencial
-termino=False
+termino=Booleana()
+lock = threading.Lock()  #Built in the threading para bloquear las variables de otros threads y hacerlos esperar
 
 
 class Router:
@@ -96,7 +102,9 @@ class Router:
         Activa la mecánica de un router.
         :return: None
         """
+        global lock
         # Para activar el ruter, no tiene que estar activo
+        lock.acquire()
         if self.estado != "ACTIVO":
             global eventosRouters
             global listaActivos
@@ -110,12 +118,13 @@ class Router:
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "ACTIVO"))
-            print(Fore.GREEN + f'\033[1mEl router {self.posicion} se puso en ACTIVO\033[0m')
+            print(Fore.BLUE + f'\033[1mEl router {self.posicion} se puso en ACTIVO\033[0m')
             print('')
         else:
             print(f"El router {self.posicion} ya se encontraba activo")
             print('')
-
+        lock.release()
+        
     @staticmethod
     def desactivar(router):
         """
@@ -187,22 +196,35 @@ class Router:
 
             self.estado = "RESET"
             listaActivos.pop(self.posicion, "posicion")
-            print(Fore.RED + f'\033[1mEl router {self.posicion} esta en RESET\033[0m')
+            print(Fore.BLUE + f'\033[1mEl router {self.posicion} esta en RESET\033[0m')
             print('')
             # Guardamos los datos del evento para el CSV
             nombre = "ROUTER_" + str(self.posicion)
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "EN_RESET"))
+            
+            #Creamos un thread para que el resto del codigo se siga corriendo.        CLAVEEEE
+            thread_sleep=threading.Thread(target=Router.reiniciar_thread, args=(self,random.randint(5,7),))
+            thread_sleep.start()
 
-            time.sleep(random.randint(5,10))  # Esperamos a que termine de pasar el tiempo de reset
-
-            # Volvemos a activar el router
-            Router.activar(self)
         else:
             print(
                 Fore.RED + f'\033[1mError, el Router {self.posicion} no está activo. Por ende no se puede reiniciar\033[0m')
             print('')
 
+    def reiniciar_thread(self,tiempo:int):
+        """
+        :param self:router   tiempo: La duración del reset
+        Es una funcion con ejecucion simultanea para los routers en reset
+        :return: None
+        """
+        time.sleep(tiempo) # Esperamos a que termine de pasar el tiempo de reset
+        global termino
+        time.sleep(0.5)
+        if termino.valor==False:
+                Router.activar(self)
+        return None
+            
     def funcion_latencia(self):
         """
           Simula una función de latencia al introducir una pausa en la ejecución del router.
