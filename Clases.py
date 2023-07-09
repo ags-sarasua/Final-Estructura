@@ -18,15 +18,6 @@ listaActivos = Lista()  # Lista enlazada
 eventosRouters = []  # Lista secuencial
 
 
-def timer(tiempo_espera):
-    """
-     Función que pausa la ejecución durante un tiempo de espera determinado.
-    :param tiempo_espera: Tiempo de espera en segundos.
-    :return: None
-    """
-    time.sleep(tiempo_espera)
-
-
 class Router:
     def __init__(self, posicion: int, latencia=0.1, estado="ACTIVO"):
         """
@@ -80,7 +71,7 @@ class Router:
         Devuelve una representación en forma de cadena del objeto Router.
         :return: Una cadena que muestra la posición, estado y latencia del router.
         """
-        return f"Posicion: {self.posicion}, Estado: {self.estado}, Latencia: {self.latencia}"
+        return f"Posicion: {self.posicion}, Estado: {self.estado}"
 
     @staticmethod
     def activar(router):
@@ -190,10 +181,7 @@ class Router:
 
         # Buscamos al router en la lista activos, si existe entra al if
         if listaActivos.buscar_inst(self.posicion, "posicion"):
-            # creamos el timer que controla un tiempo de reseteo aleatorio entre 5 y 10 seg
-            threadTiempo = threading.Thread(target=timer, args=(random.randint(5, 10),))
-            # Activamos el thread
-            threadTiempo.start()
+
 
             self.estado = "RESET"
             listaActivos.pop(self.posicion, "posicion")
@@ -204,7 +192,7 @@ class Router:
             fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             eventosRouters.append((nombre, fecha_evento, "EN_RESET"))
 
-            threadTiempo.join()  # Esperamos a que termine de pasar el tiempo de reset
+            time.sleep(random.randint(5,10))  # Esperamos a que termine de pasar el tiempo de reset
 
             # Volvemos a activar el router
             Router.activar(self)
@@ -330,7 +318,7 @@ class routingSim:
                 print('')
                 self.enviar_paquetes(paquete, listaActivos)
                 return None
-            timer(0.1)
+            time.sleep(0.1)
 
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
         """

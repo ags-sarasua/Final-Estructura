@@ -3,7 +3,7 @@ import os
 from colorama import init, Fore, Back, Style
 from Clases import *
 from Listas_enlazadas import *
-from Funciones_auxiliares import validarNum, graficar, cuenta_regresiva_popup,timer, tipo_de_simulacion_funcion
+from Funciones_auxiliares import validarNum, graficar, cuenta_regresiva_popup, timer, tipo_de_simulacion_funcion
 
 
 # Función simular: solo recibe la duración de la misma, en segundos.
