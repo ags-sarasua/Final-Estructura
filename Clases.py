@@ -12,10 +12,12 @@ from colorama import init, Fore, Back, Style
 global listaRouters
 global listaActivos
 global eventosRouters
+global termino
 
 listaRouters = Lista()  # Lista enlazada
 listaActivos = Lista()  # Lista enlazada
 eventosRouters = []  # Lista secuencial
+termino=False
 
 
 class Router:
@@ -263,38 +265,6 @@ class routingSim:
         self.duracion = duracion
         self.registro_evento = []
 
-    def routers_txt(self):
-        """
-        Crea archivos de texto para cada router que contengan los mensajes recibidos.
-        :return: None
-        """
-        global listaRouters
-        nodo_actual = listaRouters.head
-        routers_sin_mensajes = []
-        while nodo_actual is not None:
-            router = nodo_actual.dato
-
-            if len(router.lista_paquetes_recibidos) == 0:
-                routers_sin_mensajes.append(router)
-            else:
-                with open("router_" + str(router.posicion), "w") as archivo:
-                    sublistas = {}
-
-                    for paquete in router.lista_paquetes_recibidos:
-                        posicion = paquete.router_origen.posicion
-                        if posicion not in sublistas:
-                            sublistas[posicion] = []
-                        sublistas[posicion].append(paquete.mensaje)
-
-                    for posicion, sublist in sublistas.items():
-                        archivo.write("Origen: Router " + str(posicion) + "\n")
-                        for mensaje in sublist:
-                            archivo.write(mensaje + "\n")
-            nodo_actual = nodo_actual.prox
-
-        for router_sin_mensajes in routers_sin_mensajes:
-            with open("router_" + str(router_sin_mensajes.posicion), "w") as archivo:
-                archivo.write("Este router no ha recibido mensajes\n")
 
     def prioridad_enviar_paquetes(self, paquete: Paquete, listaActivos: Lista):
         """
@@ -419,11 +389,14 @@ class routingSim:
                 # Escribimos por línea como se pide en las consignas
                 writer.writerow([router, fecha_evento, evento])
         print('__________________________________________')
+        print(Fore.RED + '\033[1mEl tiempo ha terminado\033[0m')
         print('')
         print('')
         print('')
         print('')
-        print('')
+        time.sleep(1)
+        print('Cargando archivos csv')
+        time.sleep(1)
         print(Fore.GREEN + '\033[1mSe han guardado los eventos en el archivo CSV.\033[0m')
 
 
@@ -444,9 +417,53 @@ class routingSim:
                 f"Router {router.posicion}: {paquetes_enviados} paquete/s enviados, {paquetes_recibidos} recibido/s")
             nodo_actual = nodo_actual.prox
 
+        time.sleep(1)
+        print('Procesando archivos csv')
+        time.sleep(1)
+        
         for tasa in tasa_paquetes:
             time.sleep(0.5)  # SOLO PARA MEJORAR LA VISUALIZACIÓN
-            print(tasa)
+            print(Fore.GREEN + f'\033[1m{tasa}\033[0m')
 
         print('')
         return None
+
+    def routers_txt(self):
+        """
+        Crea archivos de texto para cada router que contengan los mensajes recibidos.
+        :return: None
+        """
+        global listaRouters
+        nodo_actual = listaRouters.head
+        routers_sin_mensajes = []
+        
+        print(' ')
+        print('Cargando archivos txt')
+        time.sleep(1)
+        while nodo_actual is not None:
+            router = nodo_actual.dato
+
+            if len(router.lista_paquetes_recibidos) == 0:
+                routers_sin_mensajes.append(router)
+            else:
+                with open("router_" + str(router.posicion), "w") as archivo:
+                    sublistas = {}
+
+                    for paquete in router.lista_paquetes_recibidos:
+                        posicion = paquete.router_origen.posicion
+                        if posicion not in sublistas:
+                            sublistas[posicion] = []
+                        sublistas[posicion].append(paquete.mensaje)
+
+                    for posicion, sublist in sublistas.items():
+                        archivo.write("Origen: Router " + str(posicion) + "\n")
+                        for mensaje in sublist:
+                            archivo.write(mensaje + "\n")
+            nodo_actual = nodo_actual.prox
+
+        for router_sin_mensajes in routers_sin_mensajes:
+            with open("router_" + str(router_sin_mensajes.posicion), "w") as archivo:
+                archivo.write("Este router no ha recibido mensajes\n")
+
+        print(Fore.GREEN + '\033[1mSe han guardado los paquetes recibidos por cado router en su correpondiente txt\033[0m')
+        print('')

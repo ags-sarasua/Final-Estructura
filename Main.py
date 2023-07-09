@@ -18,6 +18,7 @@ def simular(simulacion, tipo_de_simulacion):
     global listaRouters
     global listaActivos
     global eventosRouters
+    global termino
 
     # Creamos los Routers
     if Router.check_router_unico(1): Router_1 = Router(1)
@@ -52,31 +53,57 @@ def simular(simulacion, tipo_de_simulacion):
 
     # Enviamos los paquetes creados
     simulacion.prioridad_enviar_paquetes(paquete1, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)  # SOLO PARA MEJORAR LA VISUAL CUANDO SE CORRE
+    
     Router.desactivar(Router_6)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     Router.activar('Router3')
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete2, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete3, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete4, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     Router.reiniciar(Router_2)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete5, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete6, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete7, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     Router.desactivar(Router_2)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete8, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete9, listaActivos)
+    if termino==True: return None
     time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete10, listaActivos)
     time.sleep(tipo_de_simulacion)
 
@@ -89,6 +116,8 @@ def main():
     global listaRouters
     global listaActivos
     global eventosRouters
+    global termino
+    
     print('')
     print('')
     print('BIENVENIDO ')
@@ -116,11 +145,11 @@ def main():
 
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
-    # Matamos la thread 2 en caso que no haya terminado la simulacion
-    t2.join(timeout=0)
+    termino=True
+    time.sleep(2)
+    graficar()  # Graficamos los eventos de cada Router
     simulacion.crear_csv()  # Escribimos el system_log
     simulacion.routers_txt()  # Escribimos los mensajes recibidos en txt
-    graficar()  # Graficamos los eventos de cada Router
     simulacion.tasa_de_paquetes()
 
     print(Fore.RED + "\033[1mFIN DEL PROGRAMA\033[0m")
