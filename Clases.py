@@ -418,7 +418,7 @@ class routingSim:
             nodo_actual = nodo_actual.prox
 
         time.sleep(1)
-        print('Procesando archivos csv')
+        print('Procesando tasa de paquetes por router')
         time.sleep(1)
         
         for tasa in tasa_paquetes:

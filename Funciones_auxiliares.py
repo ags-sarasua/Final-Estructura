@@ -26,7 +26,9 @@ def graficar():
 
     # Arrancamos por el 1er Router de todos
     nodo_actual = listaRouters.head
-
+    print('')
+    print('Cargando grafico')
+    time.sleep(3)
     # Trabajamos con los Routers uno a uno hasta llegar al final
     while nodo_actual is not None:
         # Vamos llenando las listas con el nro de Router y la cantidad de enviados/Recibidos
@@ -117,17 +119,17 @@ def tipo_de_simulacion_funcion():
     return tiempo_de_retraso
 
 
-
+"""
 def cuenta_regresiva_popup(duracion_total):
-    """
+    
     Muestra una ventana emergente con una cuenta regresiva.
     :param duracion_total: La duración total de la cuenta regresiva en segundos.
-    """
+    
     # Función para actualizar la cuenta regresiva
     def actualizar_cuenta_regresiva():
-        """
+        
         Actualiza la cuenta regresiva en la etiqueta y programa la próxima actualización.
-        """
+        
         nonlocal tiempo_restante  # Utilizar la variable de nivel superior
         if tiempo_restante >= 0:
             etiqueta.config(text=f"Tiempo restante: {tiempo_restante} segundos")
@@ -152,3 +154,4 @@ def cuenta_regresiva_popup(duracion_total):
 
     # Mostrar la ventana
     ventana.mainloop()
+"""

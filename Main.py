@@ -3,7 +3,7 @@ import os
 from colorama import init, Fore, Back, Style
 from Clases import *
 from Listas_enlazadas import *
-from Funciones_auxiliares import validarNum, graficar, cuenta_regresiva_popup,timer, tipo_de_simulacion_funcion
+from Funciones_auxiliares import validarNum, graficar, timer, tipo_de_simulacion_funcion
 
 
 # Función simular: solo recibe la duración de la misma, en segundos.
@@ -137,8 +137,8 @@ def main():
     # Creamos los Threads de simulación y el del timer que limitará a la simulación
     t1 = threading.Thread(target=timer, args=(tiempo_simulacion,))
     t2 = threading.Thread(target=simular, args=(simulacion, tipo_de_simulacion))
-    t3 = threading.Thread(target=cuenta_regresiva_popup, args=(tiempo_simulacion,))
-    t3.start()
+    #t3 = threading.Thread(target=cuenta_regresiva_popup, args=(tiempo_simulacion,))
+    #t3.start()
     # Ejecutamos las 2 funciones a través de los Threads
     t1.start()
     t2.start()
@@ -147,13 +147,18 @@ def main():
     t1.join()
     termino=True
     time.sleep(2)
-    graficar()  # Graficamos los eventos de cada Router
     simulacion.crear_csv()  # Escribimos el system_log
     simulacion.routers_txt()  # Escribimos los mensajes recibidos en txt
+    time.sleep(1)
+    graficar()  # Graficamos los eventos de cada Router
+    
     simulacion.tasa_de_paquetes()
 
     print(Fore.RED + "\033[1mFIN DEL PROGRAMA\033[0m")
+    time.sleep(3)
     print("Muchas gracias")
+    print('')
+    print('Atte. Alonso, Ormaechea Graiver, Sarasua, Tamaki')
     print('')
 
     # Terminamos la ejecución del programa
