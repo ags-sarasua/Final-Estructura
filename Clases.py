@@ -388,8 +388,6 @@ class routingSim:
             for router, fecha_evento, evento in eventosRouters:
                 # Escribimos por línea como se pide en las consignas
                 writer.writerow([router, fecha_evento, evento])
-        print('__________________________________________')
-        print(Fore.RED + '\033[1mEl tiempo ha terminado\033[0m')
         print('')
         print('')
         print('')

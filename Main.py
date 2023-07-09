@@ -146,7 +146,9 @@ def main():
     # Esperamos a que pase el tiempo para dar por terminada la simulación
     t1.join()
     termino=True
-    time.sleep(2)
+    print('__________________________________________')
+    print(Fore.RED + '\033[1mEl tiempo ha terminado\033[0m')
+    time.sleep(7)
     simulacion.crear_csv()  # Escribimos el system_log
     simulacion.routers_txt()  # Escribimos los mensajes recibidos en txt
     time.sleep(1)
