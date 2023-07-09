@@ -415,6 +415,8 @@ class routingSim:
                 f"Router {router.posicion}: {paquetes_enviados} paquete/s enviados, {paquetes_recibidos} recibido/s")
             nodo_actual = nodo_actual.prox
 
+        print('')
+        print('')
         time.sleep(1)
         print('Procesando tasa de paquetes por router')
         time.sleep(1)
