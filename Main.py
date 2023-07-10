@@ -130,7 +130,7 @@ def main():
     print('')
     # Pedimos un tiempo de simulación al usuario, validando que sea un número entre 0 y 1000
     tipo_de_simulacion = tipo_de_simulacion_funcion()
-    tiempo_simulacion = validarNum(0, 1000)
+    tiempo_simulacion = validarNum(1, 1000)
 
     print('')
     print(Fore.GREEN + "\033[1mCOMIENZA LA SIMULACIÓN\033[0m")

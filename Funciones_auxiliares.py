@@ -87,7 +87,7 @@ def validarNum(min: int, max: int) -> int:
     while (booleana == False):
         try:
             print('')
-            ingresado = int(input(Fore.GREEN + "\033[1mIngrese tiempo de simulación:  \033[0m"))
+            ingresado = int(input(Fore.GREEN + "\033[1mIngrese tiempo de simulación (en segundos):  \033[0m"))
             print('')
             if (ingresado < min or ingresado > max):
                 print("Error, el número debe estar entre {} y {}".format(min, max))
@@ -96,7 +96,7 @@ def validarNum(min: int, max: int) -> int:
 
         # El programa se rompe si el usuario no ingresa un número
         except:
-            print("Error, tiene que ingresar un número. intente de nuevo")
+            print("Error, tiene que ingresar un número entero. intente de nuevo")
 
 
 def tipo_de_simulacion_funcion():
