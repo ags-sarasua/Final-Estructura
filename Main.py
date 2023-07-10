@@ -49,20 +49,13 @@ def simular(simulacion, tipo_de_simulacion):
     if Paquete.check_paquete("5 o mas", Router_5, Router_1):                     paquete9 = Paquete("5 o mas", Router_5,
                                                                                                     Router_6)
     if Paquete.check_paquete("Gano Python", Router_1, Router_6):                 paquete10 = Paquete("Python es lo mas",
-                                                                                                     Router_1, Router_1)
+                                                                                                     Router_6, Router_1)
 
-    # Enviamos los paquetes creados
-    Router.reiniciar(Router_2)
-    if termino.valor==True: return None
-    time.sleep(tipo_de_simulacion)
-    
+    # Enviamos los paquetes creados, activamos, reseteamos, desactivamos routers
+
     simulacion.prioridad_enviar_paquetes(paquete1, listaActivos)
     if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)  # SOLO PARA MEJORAR LA VISUAL CUANDO SE CORRE
-    
-    Router.desactivar(Router_6)
-    if termino.valor==True: return None
-    time.sleep(tipo_de_simulacion)
     
     Router.activar('Router3')
     if termino.valor==True: return None
@@ -104,7 +97,15 @@ def simular(simulacion, tipo_de_simulacion):
     if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
+    Router.desactivar(Router_6)
+    if termino.valor==True: return None
+    time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete9, listaActivos)
+    if termino.valor==True: return None
+    time.sleep(tipo_de_simulacion)
+    
+    Router.activar(Router_6)
     if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)
     
