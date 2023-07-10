@@ -58,6 +58,10 @@ class Router:
         nombre = "ROUTER_" + str(self.posicion)
         fecha_evento = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
         eventosRouters.append((nombre, fecha_evento, "ACTIVO"))
+        
+        #printeamos el hecho
+        print(Fore.GREEN + f'\033[1mEl router {self.posicion} ha sido agregado al sistema\033[0m')
+        time.sleep(0.2)
 
     @staticmethod
     def check_router_unico(numero):  # True o False _ checkea posicion
@@ -315,13 +319,11 @@ class routingSim:
     def enviar_paquetes(self, paquete: Paquete, lista_activos: Lista, contador=0):
         """
         Envía un paquete a través de los routers hasta alcanzar el router de destino.
-
         :param paquete: El paquete a enviar.
         :param lista_activos: La lista de routers activos.
-        :param contador: El contador de reenvío de paquetes.
+        :param contador: Un contador para saber el nivel de recursion
         :return: None
         """
-
         # Chequeamos si el mensaje va hacia la izquierda o va hacia la derecha
         # viendo las posiciones de origen y destino
         if paquete.router_actual.posicion < paquete.router_destino.posicion:  # Va para la derecha

@@ -52,6 +52,10 @@ def simular(simulacion, tipo_de_simulacion):
                                                                                                      Router_1, Router_1)
 
     # Enviamos los paquetes creados
+    Router.reiniciar(Router_2)
+    if termino.valor==True: return None
+    time.sleep(tipo_de_simulacion)
+    
     simulacion.prioridad_enviar_paquetes(paquete1, listaActivos)
     if termino.valor==True: return None
     time.sleep(tipo_de_simulacion)  # SOLO PARA MEJORAR LA VISUAL CUANDO SE CORRE
@@ -135,7 +139,7 @@ def main():
     # Creamos el objeto simulación
     simulacion = routingSim(tiempo_simulacion)
 
-    # Creamos los Threads de simulación y el del timer que limitará a la simulación
+    # Creamos el Thread de simulación y el del timer que limitará a la simulación
     t1 = threading.Thread(target=timer, args=(tiempo_simulacion,))
     t2 = threading.Thread(target=simular, args=(simulacion, tipo_de_simulacion))
     t3 = threading.Thread(target=cuenta_regresiva_popup, args=(tiempo_simulacion,))
